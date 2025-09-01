@@ -25,3 +25,4 @@ wheels/
 #otros
 *_files/
 *.DS_Store
+*.vscode/
