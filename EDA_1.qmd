@@ -1,0 +1,74 @@
+---
+author: "ACH - Grupo 1"
+title: "TANI - Proyecto Desarollo"
+format:
+    pdf: default
+toc: true
+echo: false
+margin: 0
+code-fold: true
+fig-width: 7.5
+---
+
+# Resumen Ejecutivo
+La Asociación Taller de los Niños (TANI) es una ONG peruana con más de 45 años de experiencia dedicada a mejorar la calidad de vida de niños y familias en situación de vulnerabilidad, especialmente en los primeros años de vida, a través de un enfoque integral que combina educación, salud, nutrición y fortalecimiento comunitario. 
+El estudio tiene el fin de realizar un análisis predictivo respecto al bajo desarrollo infantil y así fortalecer la toma de decisiones en salud y nutrición. 
+
+
+## EDA - Entregable 1
+
+Esta primera entrega tiene como objetivo presentar lo hallado en la informacion brindada por la ONG as is, ademas de mostrar un analisis univariado comentando los insights relevantes encontrados en la exploracion inicial de las variables.
+
+### 1. Configuración y Carga de Datos
+```{python}
+#| echo: false
+# Importación de librerías
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.express as px
+import seaborn as sns
+import os
+import sys
+import re
+
+pd.set_option('display.max_colwidth', None)
+pd.set_option('display.max_columns', None)
+
+# Lectura de datasets compartidos
+df_desnutricion = pd.read_excel("Data/DATA PROYECTO BREIT.xlsx", sheet_name="DESNUTRICION")
+df_desarrollo = pd.read_excel("Data/DATA PROYECTO BREIT.xlsx", sheet_name="DESARROLLO")
+df_diccionario = pd.read_excel("Data/DATA PROYECTO BREIT.xlsx", sheet_name="DICCIONARIO DE DATOS")
+
+```
+
+```{python}
+df_desnutricion.info()
+```
+
+```{python}
+def get_dataframe_info(df):
+    """
+    input
+       df -> DataFrame
+    output
+       df_null_counts -> DataFrame Info (sorted)
+    """
+
+    df_types = pd.DataFrame(df.dtypes)
+    df_nulls = df.count()
+    
+    df_null_count = pd.concat([df_types, df_nulls], axis=1)
+    df_null_count = df_null_count.reset_index()
+    
+    # Reassign column names
+    col_names = ["features", "types", "non_null_counts"]
+    df_null_count.columns = col_names
+    
+    # Add this to sort
+    df_null_count = df_null_count.sort_values(by=["non_null_counts"], ascending=False)
+    
+    return df_null_count.reset_index(drop=True)
+
+get_dataframe_info(df_desnutricion)
+```
