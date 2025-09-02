@@ -17,7 +17,7 @@ El estudio tiene el fin de realizar un análisis predictivo respecto al bajo des
 
 ## EDA - Entregable 1
 
-Esta primera entrega tiene como objetivo presentar lo hallado en la informacion brindada por la ONG as is, ademas de mostrar un analisis univariado comentando los insights relevantes encontrados en la exploracion inicial de las variables.
+Esta primera entrega tiene como objetivo presentar lo hallado en la información brindada por la ONG as is, ademas de mostrar un análisis univariado comentando los insights relevantes encontrados en la exploración inicial de las variables.
 
 ### 1. Configuración y Carga de Datos
 ```{python}
