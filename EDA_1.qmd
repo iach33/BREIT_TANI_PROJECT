@@ -72,3 +72,6 @@ def get_dataframe_info(df):
 
 get_dataframe_info(df_desnutricion)
 ```
+
+### Nota: para insertar bloque de codigo usar Shift+Cmd o Ctrl+I
+### Para ejecutar bloque de codigo: Cmd+shift+enter
