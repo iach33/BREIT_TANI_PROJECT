@@ -20,7 +20,8 @@ wheels/
 #code outputs
 *.pdf
 *.html
-*.ipynb
+#*.ipynb
+EDA_1.ipynb
 
 #otros
 *_files/
