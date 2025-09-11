@@ -1,6 +1,6 @@
 ---
 author: "ACH - Grupo 1"
-title: "TANI - Proyecto Desarollo"
+title: "TANI - Reporte Proyecto Desarollo"
 format:
     pdf: default
 toc: true
