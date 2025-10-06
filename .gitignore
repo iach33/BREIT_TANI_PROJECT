@@ -16,7 +16,7 @@ wheels/
 *.csv
 *.tsv
 *.cpgz
-
+*.png
 #code outputs
 *.pdf
 *.html
