@@ -1,6 +1,12 @@
 ---
-author: "ACH - Grupo 1"
-title: "TANI - Reporte Proyecto Desarollo"
+author: 
+- "Angel Choquehuanca"
+- "Luis Torpoco"
+- "Alan Fraquita"
+- "Edson"
+title: "Child Development Project Report: Predictive Analysis of Early Childhood Development Deficits"
+date: "October 10, 2025"
+subtitle: "NGO Applied Project - BREIT"
 format:
     pdf: default
 toc: true
@@ -8,156 +14,1274 @@ echo: false
 margin: 0
 code-fold: true
 fig-width: 7.5
+
 ---
 
-# 1. Introducción y Contexto
-La Asociación Taller de los Niños (TANI) es una ONG peruana con más de 45 años de experiencia dedicada a mejorar la calidad de vida de niños y familias en situación de vulnerabilidad, especialmente en los primeros años de vida, a través de un enfoque integral que combina educación, salud, nutrición y fortalecimiento comunitario. 
-El estudio tiene el fin de realizar un análisis predictivo respecto al bajo desarrollo infantil y así fortalecer la toma de decisiones en salud y nutrición. 
 
 
-## 1.1. Antecedentes del deficit de desarollo infantil
+\pagebreak
 
-Esta primera entrega tiene como objetivo presentar lo hallado en la información brindada por la ONG as is, ademas de mostrar un análisis univariado comentando los insights relevantes encontrados en la exploración inicial de las variables.
+# Executive Summary
 
-## 1.2. Objetivos del proyecto
+This report presents a comprehensive predictive analysis of early childhood development deficits for Asociación Taller de los Niños (TANI), a Peruvian NGO with over 45 years of experience serving vulnerable children and families. Through data science methodologies, we analyze pre- and post-pandemic health records to develop actionable predictive models that identify children at highest risk of developmental delays.
 
-## 1.3. Alcance y limitaciones
-## 1.4. Actores y beneficiarios clave (stakeholders)
+**Methodology Overview:**
+
+* Multi-phase data consolidation from pre/post-pandemic periods
+* Strategic population filtering to address class imbalance
+* Feature engineering
+
+**Key Findings:**
+
+* [To be completed after final analysis]
+* Identification of critical risk factors for targeted intervention
+* Evidence-based recommendations for resource allocation
+
+**Impact:** This work provides TANI with a decision-support framework to optimize early intervention strategies, improving outcomes for vulnerable children through data-driven prioritization.
+
+---
+
+# 1. Introduction and Context
+
+## 1.1. Background on TANI
+
+Asociación Taller de los Niños (TANI) is a non-governmental organization based in Peru, dedicated to improving the quality of life for children and families in vulnerable situations. With over 45 years of operational experience, TANI focuses particularly on the critical early years of life (0-5 years), implementing a comprehensive approach that integrates:
+
+- **Health and Nutrition:** Growth monitoring, nutritional assessment, and intervention programs
+- **Community Strengthening:** Family engagement and capacity building
+- **Preventive Care:** Systematic health check-ups and early detection of developmental issues
+
+## 1.2. Child Development Deficit Context
+
+**Fundamental Concepts of Growth and Development:**
+
+Child growth and development constitute two interrelated sets of indicators of critical utility for determining health status. Growth refers to the physical increase in weight and height/length measurements while development encompasses the progressive improvement of functional capacity and skills across multiple domains (motor, cognitive, language, and socio-emotional). Both processes are fundamentally dependent on the interaction of genetic, nutritional, and environmental factors. Therefore, systematic monitoring of normal developmental trajectories is essential to identify risk factors that may interfere with these processes, ensuring that each child achieves their full developmental potential.
+
+**The Global Burden of Early Childhood Development Deficits:**
+
+Early childhood development (ECD) deficits represent a critical public health challenge in low- and middle-income countries. According to WHO estimates, approximately 250 million children under five years in these settings are at risk of not reaching their developmental potential due to poverty and stunting (Black et al., 2017). These deficits manifest across multiple, often overlapping dimensions:
+
+- **Stunting (Chronic Malnutrition):** Linear growth failure resulting from prolonged nutritional deficiencies, affecting approximately 22% of children globally (UNICEF, 2021)
+- **Wasting (Acute Malnutrition):** Low weight-for-height indicating recent or current severe nutritional deficit
+- **Developmental Delays:** Failure to achieve age-appropriate milestones in gross motor, fine motor, cognitive, language, or social-emotional domains
+- **Micronutrient Deficiencies:** Particularly iron-deficiency anemia, affecting cognitive development and immune function
+
+**The Peruvian Context:**
+
+In Peru, despite significant economic growth over recent decades, substantial disparities persist in child health outcomes:
+
+- **Chronic Malnutrition:** Affects 12.1% of children under 5 nationally, with rates exceeding 25% in rural Andean regions (INEI-ENDES, 2023)
+- **Anemia Prevalence:** Reaches 43.1% in children aged 6-35 months, a critical window for brain development (INEI-ENDES, 2023)
+- **Developmental Delays:** Studies indicate that children exhibit delays in one or more developmental domains, with higher rates among socioeconomically disadvantaged populations (Diaz et al., 2017)
+- **Geographic Inequities:** Urban-rural and coastal-highland disparities create vastly different developmental trajectories for children
+
+**The Critical Window: First 1,000 Days:**
+
+The period from conception to age 3 (approximately 1,000 days) represents a critical window for brain architecture development. During this time, neural connections form at a rate exceeding 1 million per second, establishing the foundational circuitry for all future learning, behavior, and health (Shonkoff & Phillips, 2000). Nutritional and environmental insults during this window can result in:
+
+- **Irreversible Stunting:** Chronic undernutrition affecting linear growth and cognitive capacity
+- **Neurodevelopmental Impairment:** Compromised executive function, memory, and academic readiness
+- **Immunological Vulnerability:** Increased susceptibility to infectious diseases
+- **Intergenerational Transmission:** Girls who experience stunting are more likely to have low-birth-weight infants, perpetuating cycles of disadvantage
+
+**Multidimensional Determinants:**
+
+Following Bronfenbrenner's ecological systems framework (1979), child development results from interactions across multiple levels:
+
+- **Individual Factors:** Genetic endowment, birth characteristics (gestational age, birth weight), sex
+- **Family/Microsystem:** Maternal nutrition and health, breastfeeding practices, caregiver-child interactions, household food security
+- **Community/Exosystem:** Access to healthcare services, availability of nutritious foods, water and sanitation infrastructure
+- **Societal/Macrosystem:** Economic policies, health system organization, cultural beliefs about child-rearing
+
+This multidimensional causality necessitates comprehensive assessment approaches that capture not only anthropometric measurements but also functional developmental capacity and contextual risk factors.
+
+
+
+## 1.3. Project Objectives
+
+This project aims to leverage TANI's longitudinal data to develop actionable predictive models. Specific objectives include:
+
+### Primary Objective
+Develop and validate machine learning models to predict early childhood development deficits, enabling proactive identification of at-risk children for targeted interventions.
+
+### Secondary Objectives
+1. **Exploratory Analysis:** Conduct comprehensive exploratory data analysis (EDA) to identify patterns, risk factors, and data quality issues
+2. **Feature Engineering:** Transform raw clinical measurements into actionable predictive features
+3. **Model Development:** Compare multiple predictive algorithms and select the optimal approach for deployment
+4. **Actionable Insights:** Provide evidence-based recommendations for TANI's operational and strategic decisions
+5. **Data Infrastructure:** Document data quality issues and recommend improvements for future data collection
+
+## 1.4. Scope and Limitations
+
+### Scope
+- **Temporal Coverage:** Analysis covers post pandemic observations.
+- **Population:** Children aged 0-5 years receiving services at TANI health centers
+- **Outcome Variables:** Nutritional status (P/T, T/E, P/E) and developmental domains (gross motor, fine motor, cognitive, language, social)
+- **Predictive Modeling:** Focus on classification models for binary outcomes (deficit vs. normal)
+
+### Limitations
+- **Data Quality:** As with most real-world clinical data, missing values and measurement inconsistencies are present
+- **Selection Bias:** Population consists of families actively seeking TANI services, which may not represent the broader vulnerable population
+- **Causality:** While we identify predictive associations, establishing causal relationships requires additional study designs
+- **External Validity:** Models will be optimized for TANI's specific population and may require recalibration for other contexts
+<!-- cambiar will be por are (when done) -->
+
+## 1.5. Key Stakeholders
+
+### Primary Beneficiaries
+- **Children (0-5 years):** Direct beneficiaries through improved early detection and intervention
+- **Families:** Receive targeted support and guidance based on predictive risk assessments
+- **TANI Clinical Staff (nurses):** Gain decision support tools for prioritizing cases and planning interventions
+
+### Secondary Stakeholders
+- **TANI Leadership:** Use insights for strategic planning, resource allocation, and fundraising
+- **Public Health Authorities:** Evidence base for policy recommendations and scaling interventions
+- **Research Community:** Methodological contributions to applied machine learning in global health
+
+---
+
+# 2. Data Reception and Consolidation
+
+## 2.1. Data Sources
+
+The analysis utilizes three primary data sources provided by TANI:
+
+### Internal Data
+1. **MALNUTRITION Sheet:** Longitudinal records of children's growth monitoring and nutritional assessments
+2. **DEVELOPMENT Sheet:** Developmental screening results across five domains
+<!-- Ubigeo? -->
+
+
+### External Reference Standards
+- **WHO Growth Standards:** Age and sex-specific percentile calculations for anthropometric indicators
+- **Developmental Milestones:** Peru Ministry of Health (MINSA) guidelines for age-appropriate development
+
+## 2.2. Data Challenges and Quality Issues
+
+Initial data exploration revealed several challenges common to clinical registries:
+
+### Structural Issues
+- **Inconsistent Formatting:** Age represented in mixed formats (days, months, years: "4d", "6m", "1a8m")
+- **Variable Types:** Anthropometric measurements stored as text instead of numeric values
+- **Categorical Encoding:** Multiple encoding schemes for the same concept (e.g., "SI"/"Normal" for development)
+
+### Data Quality Issues
+- **Missing Values:** Systematic patterns of missingness in periods closed to pandemic year.
+- **Measurement Errors:** Outliers in weight, height, and head circumference requiring validation
+- **Temporal Inconsistencies:** Some records show impossible sequences (e.g., height decreasing over time)
+- **Duplicate Records:** Need to establish deduplication rules for repeated visits
+
+### Documentation Gaps
+- **Sparse Metadata:** Limited information on data collection protocols and quality control procedures
+- **Variable Definitions:** Some variables lack clear operational definitions in the data dictionary
+- **Missing Codes:** Inconsistent handling of "not applicable" vs. "not measured" vs. "refused"
+
 ```{python}
 #| echo: false
-# Importación de librerías
+# Import necessary libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 import seaborn as sns
-import os
-import sys
-import re
+import warnings
+warnings.filterwarnings('ignore')
 
+# Set display options
 pd.set_option('display.max_colwidth', None)
 pd.set_option('display.max_columns', None)
 
-# Lectura de datasets compartidos
-df_desnutricion = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DESNUTRICION")
-df_desarrollo = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DESARROLLO")
-df_diccionario = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DICCIONARIO DE DATOS")
-
+# Read datasets
+df_desnutricion = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", 
+                                 sheet_name="DESNUTRICION")
+df_desarrollo = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", 
+                               sheet_name="DESARROLLO")
+df_diccionario = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", 
+                                sheet_name="DICCIONARIO DE DATOS")
 ```
+
+## 2.3. Consolidation Process
+
+To address these challenges, we implemented a systematic data consolidation pipeline:
+
+### Phase 1: Data Profiling
+```{python}
+def get_dataframe_profile(df, name):
+    """
+    Generate comprehensive data profile
+    """
+    print(f"\n{'='*60}")
+    print(f"DATASET: {name}")
+    print(f"{'='*60}")
+    
+    print(f"\nShape: {df.shape[0]:,} rows × {df.shape[1]} columns")
+    
+    # Data types
+    print("\nData Types Distribution:")
+    print(df.dtypes.value_counts())
+    
+    # Missing values
+    missing = df.isnull().sum()
+    missing_pct = (missing / len(df) * 100).round(2)
+    missing_df = pd.DataFrame({
+        'Missing_Count': missing,
+        'Missing_Percentage': missing_pct
+    }).sort_values('Missing_Percentage', ascending=False)
+    
+    print("\nTop 10 Variables with Missing Values:")
+    print(missing_df[missing_df['Missing_Count'] > 0].head(10))
+    
+    return missing_df
+
+# Profile both datasets
+profile_desnutricion = get_dataframe_profile(df_desnutricion, "DESNUTRICION")
+profile_desarrollo = get_dataframe_profile(df_desarrollo, "DESARROLLO")
+```
+
+### Phase 2: Data Cleaning Functions
+
+Functions for parsing variables like Age, Development area, and others were implemented.
+```{python}
+def parse_age_to_months(age_str):
+    """
+    Convert mixed age format to numeric months
+    Examples: '6m' -> 6.0, '1a8m' -> 20.0, '4d' -> 0.13
+    """
+    if pd.isna(age_str):
+        return np.nan
+    
+    age_str = str(age_str).strip().lower()
+    months = 0.0
+    
+    # Extract years
+    if 'a' in age_str:
+        years = age_str.split('a')[0]
+        if years.isdigit():
+            months += int(years) * 12
+        age_str = age_str.split('a')[1] if 'a' in age_str else ""
+    
+    # Extract months
+    if 'm' in age_str:
+        month_str = age_str.split('m')[0]
+        if month_str.isdigit():
+            months += int(month_str)
+    
+    # Extract days
+    if 'd' in age_str:
+        days = age_str.split('d')[0]
+        if days.isdigit():
+            months += int(days) / 30.0  # Approximate
+    
+    return months if months > 0 else np.nan
+
+
+def clean_numeric_field(series):
+    """
+    Convert text-based numeric fields to float
+    Handle commas, spaces, and other formatting issues
+    """
+    return pd.to_numeric(
+        series.astype(str)
+              .str.replace(',', '.')
+              .str.strip(),
+        errors='coerce'
+    )
+
+
+def standardize_categorical(series, mapping_dict):
+    """
+    Standardize categorical encodings
+    """
+    return series.str.strip().str.upper().map(mapping_dict)
+```
+
+### Phase 3: Data Integration
 
 ```{python}
-df_desnutricion.info()
+# Create cleaned versions
+df_clean = pd.read_csv("../data/intermediate/tani_preprocessed_final_v2.csv")
+
+# Clean age
+#df_clean['edad_meses'] = df_clean['Edad'].apply(parse_age_to_months)
+
+# Clean anthropometric measurements
+df_clean['Peso_Num'] = clean_numeric_field(df_clean['Peso'])
+df_clean['Talla_Num'] = clean_numeric_field(df_clean['Talla'])
+df_clean['PC_Num'] = clean_numeric_field(df_clean['CabPC'])
+
+# Clean hemoglobin
+if 'Tam_hb' in df_clean.columns:
+    df_clean['Hemoglobina'] = clean_numeric_field(df_clean['Tam_hb'])
+
+# Display cleaning results
+print("\nData Cleaning Results:")
+print(f"Original records: {len(df_desnutricion):,}")
+print(f"After cleaning and consolidation (pre and post pandemic datasets): {len(df_clean):,}")
+print(f"\nAge conversion success rate: {df_clean['edad_meses'].notna().sum() / len(df_clean) * 100:.1f}%")
+print(f"Weight conversion success rate: {df_clean['Peso_Num'].notna().sum() / len(df_clean) * 100:.1f}%")
+print(f"Height conversion success rate: {df_clean['Talla_Num'].notna().sum() / len(df_clean) * 100:.1f}%")
 ```
+
+## 2.4. Consolidated Dataset Characteristics
 
 ```{python}
-def get_dataframe_info(df):
-    """
-    input
-       df -> DataFrame
-    output
-       df_null_counts -> DataFrame Info (sorted)
-    """
+# Summary statistics
+print("\nConsolidated Dataset Summary Statistics:")
+print("\nAnthropometric Measurements:")
+print(df_clean[['edad_meses', 'Peso_Num', 'Talla_Num', 'PC_Num']].describe())
 
-    df_types = pd.DataFrame(df.dtypes)
-    df_nulls = df.count()
-    
-    df_null_count = pd.concat([df_types, df_nulls], axis=1)
-    df_null_count = df_null_count.reset_index()
-    
-    # Reassign column names
-    col_names = ["features", "types", "non_null_counts"]
-    df_null_count.columns = col_names
-    
-    # Add this to sort
-    df_null_count = df_null_count.sort_values(by=["non_null_counts"], ascending=False)
-    
-    return df_null_count.reset_index(drop=True)
-
-get_dataframe_info(df_desnutricion)
+print("\nNutritional Status Distribution:")
+for col in ['P/T', 'T/E', 'P/E']:
+    if col in df_clean.columns:
+        print(f"\n{col}:")
+        print(df_clean[col].value_counts())
 ```
 
-Nota: 
-* Para insertar bloque de codigo usar Shift+Cmd o Ctrl+I
-* Para ejecutar bloque de codigo: Cmd+shift+enter
+---
 
-# 2. Recepción y Consolidación de Datos
+# 3. Exploratory Data Analysis (EDA)
 
-## 2.1. Fuentes de datos recibidas
-	•	Archivos internos de la ONG
-	•	Fuentes externas (ej. OMS, INEI, ministerios)
+## 3.1. Dataset Overview
 
-## 2.2. Desafíos encontrados en los datos originales
-	•	Inconsistencias de formato y nombres de variables
-	•	Valores faltantes y atípicos
-	•	Duplicados y registros incompletos
+```{python}
+"""
+TANI Project - Exploratory Data Analysis
+Section 3: Following Report Structure (3.1 - 3.7)
+=================================================
+"""
 
-## 2.3. Proceso de consolidación
-	•	Estandarización de variables y unidades
-	•	Integración en un dataset maestro
-	•	Documentación de reglas de negocio aplicadas
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+from scipy.stats import chi2_contingency, spearmanr
+import warnings
+warnings.filterwarnings('ignore')
 
-## 2.4. Resultado de la consolidación
-	•	Métricas de completitud
-	•	Descripción del dataset final
+# Set style
+plt.style.use('seaborn-v0_8-whitegrid')
+sns.set_palette("husl")
+pd.set_option('display.max_columns', None)
+pd.set_option('display.precision', 3)
 
-# 3. Análisis Exploratorio de Datos (EDA)
+# ============================================================================
+# LOAD AND PREPARE DATA
+# ============================================================================
 
-## 3.1. Descripción general del dataset
-	•	Número de registros y variables
-	•	Tipos de variables (categóricas, numéricas)
+print("="*80)
+print("SECTION 3: EXPLORATORY DATA ANALYSIS (EDA)")
+print("="*80)
 
-## 3.2. Evaluación de calidad post-consolidación
-	•	Completitud
-	•	Consistencia
-	•	Identificación de sesgos
+# Load data
+df = df_clean.copy()
+df['Fecha'] = pd.to_datetime(df['Fecha'])
 
-## 3.3. Estadísticas descriptivas
-	•	Distribución de edad
-	•	Distribución de peso y talla
-	•	Indicadores nutricionales básicos
+# STANDARDIZE CATEGORICAL VARIABLES
+df['Sexo'] = df['Sexo'].str.upper().str.strip()
 
-## 3.4. Visualizaciones iniciales
-	•	Histogramas y boxplots
-	•	Comparaciones por género, edad, región
+# Create derived variables
+df['Periodo'] = df['Fecha'].apply(
+    lambda x: 'Pre-Pandemic' if x < pd.Timestamp('2020-03-01') else 'Post-Pandemic'
+)
+df['Año'] = df['Fecha'].dt.year
+df['Grupo_Edad'] = pd.cut(
+    df['edad_meses'],
+    bins=[0, 6, 12, 24, 36, 60],
+    labels=['0-6m', '6-12m', '12-24m', '24-36m', '36-60m'],
+    include_lowest=True
+)
 
-## 3.5. Identificación y tratamiento de outliers
-	•	Casos extremos detectados
-	•	Criterios de imputación o exclusión
+print(f"\nDataset: {len(df):,} records × {df.shape[1]} columns")
+print(f"Date range: {df['Fecha'].min().date()} to {df['Fecha'].max().date()}")
+print(f"Unique children: {df['N_HC'].nunique():,}")
 
-## 3.6. Correlaciones y relaciones clave
-	•	Matriz de correlación
-	•	Variables asociadas a desnutrición
 
-## 3.7. Insights preliminares
-	•	Patrones por subgrupos
-	•	Posibles hipótesis sobre causas de riesgo
+# ============================================================================
+# 3.1. GENERAL DATASET DESCRIPTION
+# ============================================================================
 
-# 4. Patrones e Insights Relevantes
+def section_3_1_dataset_description():
+    """3.1. General Dataset Description"""
+    print("\n" + "="*80)
+    print("3.1. GENERAL DATASET DESCRIPTION")
+    print("="*80)
+    
+    print(f"\nNumber of records: {len(df):,}")
+    print(f"Number of variables: {df.shape[1]}")
+    print(f"Unique patients: {df['N_HC'].nunique():,}")
+    print(f"Average controls per patient: {len(df) / df['N_HC'].nunique():.1f}")
+    
+    # Variable types
+    print("\n--- Variable Types ---")
+    print("\nNumerical variables (continuous):")
+    numerical = df.select_dtypes(include=[np.number]).columns.tolist()
+    print(f"  Count: {len(numerical)}")
+    print(f"  Variables: {', '.join(numerical[:10])}...")
+    
+    print("\nCategorical variables:")
+    categorical = df.select_dtypes(include=['object']).columns.tolist()
+    print(f"  Count: {len(categorical)}")
+    print(f"  Variables: {', '.join(categorical)}")
+    
+    print("\nBinary flags (0/1):")
+    binary_cols = [col for col in df.columns if col.startswith('flg_')]
+    print(f"  Count: {len(binary_cols)}")
+    print(f"  Variables: {', '.join(binary_cols)}")
+    
+    # Temporal coverage
+    print("\n--- Temporal Coverage ---")
+    print(f"First record: {df['Fecha'].min().date()}")
+    print(f"Last record: {df['Fecha'].max().date()}")
+    print(f"Time span: {(df['Fecha'].max() - df['Fecha'].min()).days} days")
+    
+    period_dist = df['Periodo'].value_counts()
+    print("\nPandemic periods:")
+    for period, count in period_dist.items():
+        print(f"  {period}: {count:,} ({count/len(df)*100:.1f}%)")
+    
+    # Age distribution
+    print("\n--- Age Distribution ---")
+    print(df['edad_meses'].describe())
+    
+    print("\nAge groups:")
+    age_dist = df['Grupo_Edad'].value_counts().sort_index()
+    for group, count in age_dist.items():
+        print(f"  {group}: {count:,} ({count/len(df)*100:.1f}%)")
 
-## 4.1. Variables predictoras fuertes
-## 4.2. Subpoblaciones en mayor riesgo
-## 4.3. Hallazgos contextuales relevantes
+section_3_1_dataset_description()
 
-# 5. Modelado Predictivo
+```
 
-## 5.1. Definición del problema de negocio
-## 5.2. Hipótesis de modelado basadas en el EDA
-## 5.3. Modelos evaluados y resultados
-	•	Regresión logística
-	•	Random Forest
-	•	XGBoost (u otro)
+## 3.2. Data Quality Assessment
 
-## 5.4. Selección del modelo final y justificación
-## 5.5. Evaluación de métricas (precisión, recall, AUC, F1-score)
+```{python}
+def section_3_2_quality_assessment():
+    """3.2. Post-consolidation quality evaluation"""
+    print("\n" + "="*80)
+    print("3.2. DATA QUALITY ASSESSMENT")
+    print("="*80)
+    
+    # Completeness
+    print("\n--- Completeness Analysis ---")
+    total_cells = df.shape[0] * df.shape[1]
+    filled_cells = df.notna().sum().sum()
+    completeness = (filled_cells / total_cells) * 100
+    
+    print(f"\nOverall completeness: {completeness:.2f}%")
+    print(f"Total cells: {total_cells:,}")
+    print(f"Filled cells: {filled_cells:,}")
+    print(f"Missing cells: {(total_cells - filled_cells):,}")
+    
+    # Missing by variable
+    missing = df.isnull().sum()
+    missing_pct = (missing / len(df) * 100).round(2)
+    missing_df = pd.DataFrame({
+        'Variable': missing.index,
+        'Missing_Count': missing.values,
+        'Missing_Pct': missing_pct.values
+    }).sort_values('Missing_Pct', ascending=False)
+    
+    print("\n--- Variables with Missing Data (>5%) ---")
+    high_missing = missing_df[missing_df['Missing_Pct'] > 5].head(15)
+    print(high_missing.to_string(index=False))
+    
+    # Completeness by category
+    print("\n--- Completeness by Variable Category ---")
+    categories = {
+        'Demographics': ['N_HC', 'Sexo', 'edad_meses', 'Fecha'],
+        'Anthropometric': ['Peso', 'Talla', 'CabPC'],
+        'Nutritional Status': ['T/E_cat', 'P/E_cat', 'P/T_cat', 'Dx_Nutricional'],
+        'Development Flags': ['flg_cognitivo', 'flg_lenguaje', 'flg_motora_fina', 
+                              'flg_motora_gruesa', 'flg_social', 'flg_alguna'],
+        'Clinical': ['Diag_Nacimiento', 'Lactancia', 'ACA', 'Ganancia_Peso_Talla'],
+        'Laboratory': ['Tam_hb', 'Tam_para', 'Tam_graha'],
+        'Longitudinal': ['cantidad_controles', 'primer_alguna', 'ultimo_control']
+    }
+    
+    for cat_name, vars_list in categories.items():
+        existing = [v for v in vars_list if v in df.columns]
+        if existing:
+            cat_completeness = df[existing].notna().mean().mean() * 100
+            print(f"  {cat_name:25s}: {cat_completeness:5.1f}%")
+    
+    # Consistency checks
+    print("\n--- Consistency Validation ---")
+    
+    # Age consistency
+    print("\n1. Age range validation:")
+    print(f"   Min age: {df['edad_meses'].min():.1f} months")
+    print(f"   Max age: {df['edad_meses'].max():.1f} months")
+    print(f"   Mean age: {df['edad_meses'].mean():.1f} months")
+    
+    # Sex distribution
+    print("\n2. Sex distribution:")
+    sex_dist = df['Sexo'].value_counts()
+    for sex, count in sex_dist.items():
+        print(f"   {sex}: {count:,} ({count/len(df)*100:.1f}%)")
+    
+    # Check for impossible values
+    print("\n3. Biologically implausible values:")
+    impossible_weight = df[(df['Peso'] < 1.5) | (df['Peso'] > 30)].shape[0]
+    impossible_height = df[(df['Talla'] < 40) | (df['Talla'] > 130)].shape[0]
+    print(f"   Weight <1.5kg or >30kg: {impossible_weight} ({impossible_weight/len(df)*100:.3f}%)")
+    print(f"   Height <40cm or >130cm: {impossible_height} ({impossible_height/len(df)*100:.3f}%)")
+    
+    # Accuracy assessment
+    print("\n--- Accuracy Assessment ---")
+    print("\nAnthropometric measurements by age group:")
+    anthro_by_age = df.groupby('Grupo_Edad')[['Peso', 'Talla', 'CabPC']].agg(['mean', 'std'])
+    print(anthro_by_age)
+    
+    # Visualization: Completeness
+    fig, axes = plt.subplots(2, 2, figsize=(16, 10))
+    
+    # Missing data heatmap (top variables)
+    top_missing = missing_df.head(15)
+    axes[0, 0].barh(top_missing['Variable'], top_missing['Missing_Pct'], color='coral')
+    axes[0, 0].set_xlabel('Missing %', fontsize=11)
+    axes[0, 0].set_title('Top 15 Variables with Missing Data', fontsize=12, fontweight='bold')
+    axes[0, 0].axvline(20, color='red', linestyle='--', label='20% threshold')
+    axes[0, 0].legend()
+    
+    # Completeness by category
+    cat_completeness = []
+    cat_names = []
+    for cat_name, vars_list in categories.items():
+        existing = [v for v in vars_list if v in df.columns]
+        if existing:
+            cat_completeness.append(df[existing].notna().mean().mean() * 100)
+            cat_names.append(cat_name)
+    
+    axes[0, 1].bar(range(len(cat_names)), cat_completeness, color='steelblue', alpha=0.7)
+    axes[0, 1].set_xticks(range(len(cat_names)))
+    axes[0, 1].set_xticklabels(cat_names, rotation=45, ha='right')
+    axes[0, 1].set_ylabel('Completeness %', fontsize=11)
+    axes[0, 1].set_title('Completeness by Variable Category', fontsize=12, fontweight='bold')
+    axes[0, 1].axhline(80, color='red', linestyle='--', label='80% target')
+    axes[0, 1].legend()
+    for i, v in enumerate(cat_completeness):
+        axes[0, 1].text(i, v + 1, f'{v:.0f}%', ha='center', fontsize=9)
+    
+    # Age distribution quality
+    axes[1, 0].hist(df['edad_meses'].dropna(), bins=60, edgecolor='black', 
+                    alpha=0.7, color='lightgreen')
+    axes[1, 0].set_xlabel('Age (months)', fontsize=11)
+    axes[1, 0].set_ylabel('Frequency', fontsize=11)
+    axes[1, 0].set_title('Age Distribution (Quality Check)', fontsize=12, fontweight='bold')
+    axes[1, 0].axvline(df['edad_meses'].median(), color='red', linestyle='--', 
+                       label=f'Median: {df["edad_meses"].median():.1f}m')
+    axes[1, 0].legend()
+    
+    # Records per patient distribution
+    records_per_patient = df.groupby('N_HC').size()
+    axes[1, 1].hist(records_per_patient, bins=50, edgecolor='black', 
+                    alpha=0.7, color='orchid')
+    axes[1, 1].set_xlabel('Number of controls per child', fontsize=11)
+    axes[1, 1].set_ylabel('Frequency', fontsize=11)
+    axes[1, 1].set_title('Longitudinal Follow-up Quality', fontsize=12, fontweight='bold')
+    axes[1, 1].axvline(records_per_patient.median(), color='red', linestyle='--',
+                       label=f'Median: {records_per_patient.median():.0f}')
+    axes[1, 1].legend()
+    
+    plt.tight_layout()
+    plt.savefig('3_2_data_quality_assessment.png', dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    return missing_df
 
-# 6. Recomendaciones para la ONG
+missing_summary = section_3_2_quality_assessment()
+```
 
-## 6.1. Uso práctico del modelo en la toma de decisiones
-## 6.2. Acciones inmediatas basadas en insights
-## 6.3. Recomendaciones sobre mejora en recolección de datos
+## 3.3. Descriptive Statistics
 
-# 7. Conclusiones y Próximos Pasos
+```{python}
+def section_3_3_descriptive_statistics():
+    """3.3. Descriptive statistics for key variables"""
+    print("\n" + "="*80)
+    print("3.3. DESCRIPTIVE STATISTICS")
+    print("="*80)
+    
+    # Age distribution
+    print("\n--- Age Distribution ---")
+    print(df['edad_meses'].describe())
+    
+    print("\nAge by group:")
+    print(df.groupby('Grupo_Edad')['edad_meses'].describe())
+    
+    # Anthropometric measurements
+    print("\n--- Anthropometric Measurements ---")
+    anthro_vars = ['Peso', 'Talla', 'CabPC']
+    print("\nOverall statistics:")
+    print(df[anthro_vars].describe())
+    
+    print("\n--- Weight by Age Group ---")
+    print(df.groupby('Grupo_Edad')['Peso'].describe())
+    
+    print("\n--- Height by Age Group ---")
+    print(df.groupby('Grupo_Edad')['Talla'].describe())
+    
+    # Nutritional indicators
+    print("\n--- Nutritional Status Distribution ---")
+    nutritional_vars = ['T/E_cat', 'P/E_cat', 'P/T_cat', 'Dx_Nutricional']
+    
+    for var in nutritional_vars:
+        if var in df.columns:
+            print(f"\n{var}:")
+            dist = df[var].value_counts()
+            for val, count in dist.items():
+                pct = count / df[var].notna().sum() * 100
+                print(f"  {val}: {count:,} ({pct:.1f}%)")
+    
+    # Developmental domains
+    print("\n--- Developmental Status Distribution ---")
+    dev_vars = ['flg_cognitivo', 'flg_lenguaje', 'flg_motora_fina', 
+                'flg_motora_gruesa', 'flg_social', 'flg_alguna']
+    
+    print("\nDeficit rates by domain:")
+    for var in dev_vars:
+        if var in df.columns:
+            deficit_rate = df[var].mean() * 100
+            deficit_count = df[var].sum()
+            total = df[var].notna().sum()
+            print(f"  {var:25s}: {deficit_rate:5.1f}% ({int(deficit_count):,}/{total:,})")
+    
+    # Clinical variables
+    print("\n--- Clinical Characteristics ---")
+    
+    print("\nBirth diagnosis:")
+    birth_dx = df['Diag_Nacimiento'].value_counts()
+    for dx, count in birth_dx.items():
+        pct = count / df['Diag_Nacimiento'].notna().sum() * 100
+        print(f"  {dx}: {count:,} ({pct:.1f}%)")
+    
+    if 'Lactancia' in df.columns:
+        print("\nBreastfeeding type (0-6 months):")
+        lact = df[df['edad_meses'] <= 6]['Lactancia'].value_counts()
+        for type, count in lact.items():
+            pct = count / lact.sum() * 100
+            print(f"  {type}: {count:,} ({pct:.1f}%)")
+    
+    # Laboratory results
+    print("\n--- Laboratory Results ---")
+    if 'Tam_hb' in df.columns:
+        print("\nHemoglobin (g/dL):")
+        print(df['Tam_hb'].describe())
+        anemia_threshold = 11.0
+        anemia_cases = (df['Tam_hb'] < anemia_threshold).sum()
+        anemia_rate = anemia_cases / df['Tam_hb'].notna().sum() * 100
+        print(f"Anemia rate (<{anemia_threshold} g/dL): {anemia_rate:.1f}% ({anemia_cases:,})")
+    
+    # Longitudinal metrics
+    print("\n--- Longitudinal Follow-up Metrics ---")
+    long_vars = ['cantidad_controles', 'primer_alguna', 'ultimo_control']
+    for var in long_vars:
+        if var in df.columns:
+            print(f"\n{var}:")
+            print(df[var].describe())
+    
+    # Visualization
+    fig, axes = plt.subplots(3, 3, figsize=(18, 14))
+    
+    # Row 1: Age, Weight, Height distributions
+    axes[0, 0].hist(df['edad_meses'].dropna(), bins=60, edgecolor='black', 
+                    alpha=0.7, color='steelblue')
+    axes[0, 0].set_xlabel('Age (months)', fontsize=10)
+    axes[0, 0].set_ylabel('Frequency', fontsize=10)
+    axes[0, 0].set_title('Age Distribution', fontsize=11, fontweight='bold')
+    
+    axes[0, 1].hist(df['Peso'].dropna(), bins=50, edgecolor='black', 
+                    alpha=0.7, color='coral')
+    axes[0, 1].set_xlabel('Weight (kg)', fontsize=10)
+    axes[0, 1].set_ylabel('Frequency', fontsize=10)
+    axes[0, 1].set_title('Weight Distribution', fontsize=11, fontweight='bold')
+    
+    axes[0, 2].hist(df['Talla'].dropna(), bins=50, edgecolor='black', 
+                    alpha=0.7, color='lightgreen')
+    axes[0, 2].set_xlabel('Height (cm)', fontsize=10)
+    axes[0, 2].set_ylabel('Frequency', fontsize=10)
+    axes[0, 2].set_title('Height Distribution', fontsize=11, fontweight='bold')
+    
+    # Row 2: Nutritional status
+    if 'Dx_Nutricional' in df.columns:
+        dx_dist = df['Dx_Nutricional'].value_counts()
+        axes[1, 0].bar(range(len(dx_dist)), dx_dist.values, color='orange', alpha=0.7)
+        axes[1, 0].set_xticks(range(len(dx_dist)))
+        axes[1, 0].set_xticklabels(dx_dist.index, rotation=45, ha='right')
+        axes[1, 0].set_ylabel('Count', fontsize=10)
+        axes[1, 0].set_title('Nutritional Diagnosis', fontsize=11, fontweight='bold')
+    
+    # Developmental deficits
+    dev_rates = []
+    dev_names = []
+    for var in ['flg_cognitivo', 'flg_lenguaje', 'flg_motora_fina', 
+                'flg_motora_gruesa', 'flg_social']:
+        if var in df.columns:
+            dev_rates.append(df[var].mean() * 100)
+            dev_names.append(var.replace('flg_', '').title())
+    
+    axes[1, 1].barh(dev_names, dev_rates, color='salmon', alpha=0.7)
+    axes[1, 1].set_xlabel('Deficit Rate (%)', fontsize=10)
+    axes[1, 1].set_title('Developmental Deficits by Domain', fontsize=11, fontweight='bold')
+    for i, v in enumerate(dev_rates):
+        axes[1, 1].text(v + 0.3, i, f'{v:.1f}%', va='center', fontsize=9)
+    
+    # Birth diagnosis
+    birth_dx.plot(kind='bar', ax=axes[1, 2], color='lightblue', alpha=0.7)
+    axes[1, 2].set_xlabel('Birth Diagnosis', fontsize=10)
+    axes[1, 2].set_ylabel('Count', fontsize=10)
+    axes[1, 2].set_title('Birth Diagnosis Distribution', fontsize=11, fontweight='bold')
+    axes[1, 2].tick_params(axis='x', rotation=45)
+    
+    # Row 3: Longitudinal metrics
+    if 'cantidad_controles' in df.columns:
+        axes[2, 0].hist(df['cantidad_controles'].dropna(), bins=30, 
+                        edgecolor='black', alpha=0.7, color='orchid')
+        axes[2, 0].set_xlabel('Number of controls', fontsize=10)
+        axes[2, 0].set_ylabel('Frequency', fontsize=10)
+        axes[2, 0].set_title('Controls per Child', fontsize=11, fontweight='bold')
+    
+    # Deficit rate by age group
+    deficit_by_age = df.groupby('Grupo_Edad')['flg_alguna'].mean() * 100
+    deficit_by_age.plot(kind='bar', ax=axes[2, 1], color='crimson', alpha=0.7)
+    axes[2, 1].set_xlabel('Age Group', fontsize=10)
+    axes[2, 1].set_ylabel('Deficit Rate (%)', fontsize=10)
+    axes[2, 1].set_title('Deficit Rate by Age Group', fontsize=11, fontweight='bold')
+    axes[2, 1].tick_params(axis='x', rotation=45)
+    for i, v in enumerate(deficit_by_age.values):
+        axes[2, 1].text(i, v + 0.5, f'{v:.1f}%', ha='center', fontsize=9)
+    
+    # Hemoglobin distribution
+    if 'Tam_hb' in df.columns:
+        axes[2, 2].hist(df['Tam_hb'].dropna(), bins=40, edgecolor='black', 
+                        alpha=0.7, color='mediumseagreen')
+        axes[2, 2].axvline(11.0, color='red', linestyle='--', label='Anemia threshold')
+        axes[2, 2].set_xlabel('Hemoglobin (g/dL)', fontsize=10)
+        axes[2, 2].set_ylabel('Frequency', fontsize=10)
+        axes[2, 2].set_title('Hemoglobin Distribution', fontsize=11, fontweight='bold')
+        axes[2, 2].legend()
+    
+    plt.tight_layout()
+    plt.savefig('3_3_descriptive_statistics.png', dpi=300, bbox_inches='tight')
+    plt.show()
 
-## 7.1. Síntesis del proceso (de datos crudos a modelo accionable)
-## 7.2. Impacto esperado en la prevención de desnutrición
-## 7.3. Próximas fases sugeridas (nuevos datos, análisis longitudinal, validación en campo)
+section_3_3_descriptive_statistics()
+
+```
+
+
+
+
+
+## 3.4. Initial Visualizations
+
+```{python}
+# ============================================================================
+# 3.4. INITIAL VISUALIZATIONS
+# ============================================================================
+
+def section_3_4_initial_visualizations():
+    """3.4. Initial visualizations - Bivariate comparisons"""
+    print("\n" + "="*80)
+    print("3.4. INITIAL VISUALIZATIONS")
+    print("="*80)
+    
+    # Create comprehensive visualization grid
+    fig = plt.figure(figsize=(20, 14))
+    gs = fig.add_gridspec(3, 3, hspace=0.35, wspace=0.3)
+    
+    # ===== COMPARISON 1: Weight by Sex and Age =====
+    ax1 = fig.add_subplot(gs[0, 0])
+    for sex in ['F', 'M']:
+        sex_data = df[df['Sexo'] == sex]
+        ax1.scatter(sex_data['edad_meses'], sex_data['Peso'], 
+                   alpha=0.3, s=10, label=sex)
+    ax1.set_xlabel('Age (months)', fontsize=11)
+    ax1.set_ylabel('Weight (kg)', fontsize=11)
+    ax1.set_title('Weight by Age and Sex', fontsize=12, fontweight='bold')
+    ax1.legend(title='Sex')
+    ax1.grid(alpha=0.3)
+    
+    # ===== COMPARISON 2: Height by Sex and Age =====
+    ax2 = fig.add_subplot(gs[0, 1])
+    for sex in ['F', 'M']:
+        sex_data = df[df['Sexo'] == sex]
+        ax2.scatter(sex_data['edad_meses'], sex_data['Talla'], 
+                   alpha=0.3, s=10, label=sex)
+    ax2.set_xlabel('Age (months)', fontsize=11)
+    ax2.set_ylabel('Height (cm)', fontsize=11)
+    ax2.set_title('Height by Age and Sex', fontsize=12, fontweight='bold')
+    ax2.legend(title='Sex')
+    ax2.grid(alpha=0.3)
+    
+    # ===== COMPARISON 3: Weight vs Height (BMI pattern) =====
+    ax3 = fig.add_subplot(gs[0, 2])
+    scatter = ax3.scatter(df['Talla'], df['Peso'], 
+                         c=df['edad_meses'], cmap='viridis', 
+                         alpha=0.4, s=15)
+    ax3.set_xlabel('Height (cm)', fontsize=11)
+    ax3.set_ylabel('Weight (kg)', fontsize=11)
+    ax3.set_title('Weight vs Height (colored by age)', fontsize=12, fontweight='bold')
+    plt.colorbar(scatter, ax=ax3, label='Age (months)')
+    ax3.grid(alpha=0.3)
+    
+    # ===== COMPARISON 4: Nutritional Status by Age Group =====
+    ax4 = fig.add_subplot(gs[1, 0])
+    if 'Dx_Nutricional' in df.columns:
+        dx_age = pd.crosstab(df['Grupo_Edad'], df['Dx_Nutricional'], normalize='index') * 100
+        dx_age.plot(kind='bar', stacked=True, ax=ax4, alpha=0.8)
+        ax4.set_xlabel('Age Group', fontsize=11)
+        ax4.set_ylabel('Percentage (%)', fontsize=11)
+        ax4.set_title('Nutritional Status Distribution by Age', fontsize=12, fontweight='bold')
+        ax4.legend(title='Diagnosis', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+        ax4.tick_params(axis='x', rotation=45)
+    
+    # ===== COMPARISON 5: Developmental Deficits by Age Group =====
+    ax5 = fig.add_subplot(gs[1, 1])
+    dev_domains = ['flg_cognitivo', 'flg_lenguaje', 'flg_motora_fina', 
+                   'flg_motora_gruesa', 'flg_social']
+    
+    age_groups = df['Grupo_Edad'].unique()
+    age_groups = sorted([g for g in age_groups if pd.notna(g)])
+    
+    x = np.arange(len(age_groups))
+    width = 0.15
+    
+    for i, domain in enumerate(dev_domains):
+        if domain in df.columns:
+            rates = [df[df['Grupo_Edad'] == ag][domain].mean() * 100 for ag in age_groups]
+            ax5.bar(x + i*width, rates, width, label=domain.replace('flg_', '').title())
+    
+    ax5.set_xlabel('Age Group', fontsize=11)
+    ax5.set_ylabel('Deficit Rate (%)', fontsize=11)
+    ax5.set_title('Developmental Deficits by Age Group', fontsize=12, fontweight='bold')
+    ax5.set_xticks(x + width * 2)
+    ax5.set_xticklabels(age_groups, rotation=45)
+    ax5.legend(fontsize=8)
+    ax5.grid(axis='y', alpha=0.3)
+    
+    # ===== COMPARISON 6: Birth Diagnosis Impact on Growth =====
+    ax6 = fig.add_subplot(gs[1, 2])
+    birth_categories = df['Diag_Nacimiento'].unique()
+    birth_categories = [b for b in birth_categories if pd.notna(b)]
+    
+    birth_data = [df[df['Diag_Nacimiento'] == cat]['Peso'].dropna() for cat in birth_categories]
+    bp = ax6.boxplot(birth_data, labels=birth_categories, patch_artist=True)
+    for patch in bp['boxes']:
+        patch.set_facecolor('lightblue')
+    ax6.set_xlabel('Birth Diagnosis', fontsize=11)
+    ax6.set_ylabel('Weight (kg)', fontsize=11)
+    ax6.set_title('Weight Distribution by Birth Diagnosis', fontsize=12, fontweight='bold')
+    ax6.tick_params(axis='x', rotation=45)
+    ax6.grid(axis='y', alpha=0.3)
+    
+    # ===== COMPARISON 7: Pandemic Impact on Deficits =====
+    ax7 = fig.add_subplot(gs[2, 0])
+    pandemic_deficit = df.groupby(['Periodo', 'Grupo_Edad'])['flg_alguna'].mean() * 100
+    pandemic_deficit = pandemic_deficit.unstack(level=0)
+    
+    if pandemic_deficit.shape[1] == 2:
+        pandemic_deficit.plot(kind='bar', ax=ax7, color=['lightgreen', 'salmon'], alpha=0.8)
+        ax7.set_xlabel('Age Group', fontsize=11)
+        ax7.set_ylabel('Deficit Rate (%)', fontsize=11)
+        ax7.set_title('Deficit Rates: Pre vs Post Pandemic', fontsize=12, fontweight='bold')
+        ax7.tick_params(axis='x', rotation=45)
+        ax7.legend(title='Period')
+        ax7.grid(axis='y', alpha=0.3)
+    
+    # ===== COMPARISON 8: Hemoglobin by Age Group =====
+    ax8 = fig.add_subplot(gs[2, 1])
+    if 'Tam_hb' in df.columns:
+        hb_by_age = [df[df['Grupo_Edad'] == ag]['Tam_hb'].dropna() for ag in age_groups]
+        bp2 = ax8.boxplot(hb_by_age, labels=age_groups, patch_artist=True)
+        for patch in bp2['boxes']:
+            patch.set_facecolor('lightcoral')
+        ax8.axhline(11.0, color='red', linestyle='--', linewidth=2, label='Anemia threshold')
+        ax8.set_xlabel('Age Group', fontsize=11)
+        ax8.set_ylabel('Hemoglobin (g/dL)', fontsize=11)
+        ax8.set_title('Hemoglobin Distribution by Age', fontsize=12, fontweight='bold')
+        ax8.tick_params(axis='x', rotation=45)
+        ax8.legend()
+        ax8.grid(axis='y', alpha=0.3)
+    
+    # ===== COMPARISON 9: Number of Controls vs Deficit Detection =====
+    ax9 = fig.add_subplot(gs[2, 2])
+    if 'cantidad_controles' in df.columns and 'flg_alguna' in df.columns:
+        deficit_yes = df[df['flg_alguna'] == 1]['cantidad_controles'].dropna()
+        deficit_no = df[df['flg_alguna'] == 0]['cantidad_controles'].dropna()
+        
+        ax9.hist([deficit_no, deficit_yes], bins=30, label=['No Deficit', 'With Deficit'],
+                alpha=0.7, color=['lightblue', 'salmon'])
+        ax9.set_xlabel('Number of Controls', fontsize=11)
+        ax9.set_ylabel('Frequency', fontsize=11)
+        ax9.set_title('Follow-up Intensity by Deficit Status', fontsize=12, fontweight='bold')
+        ax9.legend()
+        ax9.grid(axis='y', alpha=0.3)
+    
+    plt.savefig('3_4_initial_visualizations.png', dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    # Statistical comparisons
+    print("\n--- Statistical Comparisons ---")
+    
+    # Sex differences in anthropometry
+    print("\n1. Anthropometric differences by sex (t-tests):")
+    from scipy.stats import ttest_ind
+    
+    for var in ['Peso', 'Talla', 'CabPC']:
+        female = df[df['Sexo'] == 'F'][var].dropna()
+        male = df[df['Sexo'] == 'M'][var].dropna()
+        t_stat, p_val = ttest_ind(female, male)
+        print(f"   {var}: t={t_stat:.3f}, p={p_val:.4f} {'***' if p_val < 0.001 else '**' if p_val < 0.01 else '*' if p_val < 0.05 else 'ns'}")
+    
+    # Pandemic impact on deficit rates
+    print("\n2. Pandemic impact on deficit rates (Chi-square):")
+    if 'Periodo' in df.columns and 'flg_alguna' in df.columns:
+        contingency = pd.crosstab(df['Periodo'], df['flg_alguna'])
+        chi2, p_val, dof, expected = chi2_contingency(contingency)
+        print(f"   Chi2={chi2:.3f}, p={p_val:.4f}")
+        print(f"   Deficit rate Pre-pandemic: {df[df['Periodo']=='Pre-Pandemic']['flg_alguna'].mean()*100:.1f}%")
+        print(f"   Deficit rate Post-pandemic: {df[df['Periodo']=='Post-Pandemic']['flg_alguna'].mean()*100:.1f}%")
+    
+    # Birth diagnosis impact on growth
+    print("\n3. Birth diagnosis impact on weight (ANOVA):")
+    from scipy.stats import f_oneway
+    
+    groups = [df[df['Diag_Nacimiento'] == cat]['Peso'].dropna() 
+              for cat in df['Diag_Nacimiento'].unique() if pd.notna(cat)]
+    if len(groups) > 1:
+        f_stat, p_val = f_oneway(*groups)
+        print(f"   F={f_stat:.3f}, p={p_val:.4f}")
+
+section_3_4_initial_visualizations()
+```
+## 3.5. Outlier Detection and Treatment
+
+```{python}
+# ============================================================================
+# 3.5. OUTLIER DETECTION AND TREATMENT
+# ============================================================================
+
+def section_3_5_outlier_detection():
+    """3.5. Identify and treat outliers using multiple methods"""
+    print("\n" + "="*80)
+    print("3.5. OUTLIER DETECTION AND TREATMENT")
+    print("="*80)
+    
+    # Variables to analyze for outliers
+    numerical_vars = ['edad_meses', 'Peso', 'Talla', 'CabPC', 'Tam_hb']
+    
+    outlier_summary = {}
+    
+    print("\n--- Outlier Detection Methods ---")
+    
+    for var in numerical_vars:
+        if var in df.columns:
+            print(f"\n{var}:")
+            data = df[var].dropna()
+            
+            # Method 1: IQR method
+            Q1 = data.quantile(0.25)
+            Q3 = data.quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            
+            iqr_outliers = ((data < lower_bound) | (data > upper_bound)).sum()
+            
+            # Method 2: Z-score method (|z| > 3)
+            z_scores = np.abs(stats.zscore(data))
+            z_outliers = (z_scores > 3).sum()
+            
+            # Method 3: Domain-specific thresholds
+            if var == 'Peso':
+                domain_outliers = ((data < 1.5) | (data > 30)).sum()
+                domain_desc = "Weight <1.5kg or >30kg"
+            elif var == 'Talla':
+                domain_outliers = ((data < 40) | (data > 130)).sum()
+                domain_desc = "Height <40cm or >130cm"
+            elif var == 'CabPC':
+                domain_outliers = ((data < 30) | (data > 60)).sum()
+                domain_desc = "Head circ <30cm or >60cm"
+            elif var == 'edad_meses':
+                domain_outliers = ((data < 0) | (data > 60)).sum()
+                domain_desc = "Age <0 or >60 months"
+            elif var == 'Tam_hb':
+                domain_outliers = ((data < 5) | (data > 20)).sum()
+                domain_desc = "Hemoglobin <5 or >20 g/dL"
+            else:
+                domain_outliers = 0
+                domain_desc = "N/A"
+            
+            print(f"  IQR method (1.5*IQR): {iqr_outliers} ({iqr_outliers/len(data)*100:.2f}%)")
+            print(f"    Lower bound: {lower_bound:.2f}, Upper bound: {upper_bound:.2f}")
+            print(f"  Z-score method (|z|>3): {z_outliers} ({z_outliers/len(data)*100:.2f}%)")
+            print(f"  Domain-specific: {domain_outliers} ({domain_outliers/len(data)*100:.2f}%)")
+            print(f"    Criteria: {domain_desc}")
+            
+            outlier_summary[var] = {
+                'iqr': iqr_outliers,
+                'zscore': z_outliers,
+                'domain': domain_outliers,
+                'total_obs': len(data)
+            }
+    
+    # Visualization
+    fig, axes = plt.subplots(3, 3, figsize=(18, 14))
+    axes = axes.flatten()
+    
+    plot_idx = 0
+    for var in numerical_vars:
+        if var in df.columns and plot_idx < 9:
+            data = df[var].dropna()
+            
+            # Box plot with outliers highlighted
+            ax = axes[plot_idx]
+            bp = ax.boxplot([data], labels=[var], patch_artist=True, 
+                           showfliers=True, flierprops=dict(marker='o', markerfacecolor='red', 
+                                                            markersize=3, alpha=0.5))
+            bp['boxes'][0].set_facecolor('lightblue')
+            
+            # Add mean line
+            ax.axhline(data.mean(), color='green', linestyle='--', 
+                      label=f'Mean: {data.mean():.2f}')
+            
+            # Add IQR bounds
+            Q1 = data.quantile(0.25)
+            Q3 = data.quantile(0.75)
+            IQR = Q3 - Q1
+            ax.axhline(Q1 - 1.5*IQR, color='orange', linestyle=':', 
+                      label=f'Lower: {Q1-1.5*IQR:.2f}')
+            ax.axhline(Q3 + 1.5*IQR, color='orange', linestyle=':', 
+                      label=f'Upper: {Q3+1.5*IQR:.2f}')
+            
+            ax.set_title(f'{var} - Outlier Detection', fontsize=11, fontweight='bold')
+            ax.legend(fontsize=8)
+            ax.grid(axis='y', alpha=0.3)
+            
+            plot_idx += 1
+            
+            # Histogram with outliers
+            if plot_idx < 9:
+                ax2 = axes[plot_idx]
+                ax2.hist(data, bins=50, edgecolor='black', alpha=0.7, color='steelblue')
+                
+                # Mark outlier regions
+                lower_bound = Q1 - 1.5*IQR
+                upper_bound = Q3 + 1.5*IQR
+                ax2.axvline(lower_bound, color='red', linestyle='--', linewidth=2)
+                ax2.axvline(upper_bound, color='red', linestyle='--', linewidth=2)
+                
+                ax2.set_xlabel(var, fontsize=10)
+                ax2.set_ylabel('Frequency', fontsize=10)
+                ax2.set_title(f'{var} Distribution', fontsize=11, fontweight='bold')
+                ax2.grid(axis='y', alpha=0.3)
+                
+                plot_idx += 1
+    
+    # Hide unused subplots
+    for idx in range(plot_idx, 9):
+        axes[idx].axis('off')
+    
+    plt.tight_layout()
+    plt.savefig('3_5_outlier_detection.png', dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    # Treatment strategy
+    print("\n" + "="*80)
+    print("OUTLIER TREATMENT STRATEGY")
+    print("="*80)
+```
+## 3.6. Correlation Analysis
+
+```{python}
+# ============================================================================
+# 3.6. CORRELATION ANALYSIS
+# ============================================================================
+from scipy.stats import ttest_ind
+def section_3_6_correlation_analysis(df_clean):
+    """3.6. Analyze correlations and key relationships"""
+    print("\n" + "="*80)
+    print("3.6. CORRELATION ANALYSIS")
+    print("="*80)
+    
+    # Select numerical variables for correlation
+    numerical_cols = df_clean.select_dtypes(include=[np.number]).columns.tolist()
+    
+    # Remove ID and date-related columns
+    exclude_cols = ['N_HC', 'Año']
+    numerical_cols = [col for col in numerical_cols if col not in exclude_cols]
+    
+    print(f"\nAnalyzing correlations among {len(numerical_cols)} numerical variables")
+    
+    # Calculate correlation matrix
+    corr_matrix = df_clean[numerical_cols].corr()
+    
+    # Find strongest correlations
+    print("\n--- Strongest Positive Correlations (r > 0.7) ---")
+    strong_positive = []
+    for i in range(len(corr_matrix.columns)):
+        for j in range(i+1, len(corr_matrix.columns)):
+            if corr_matrix.iloc[i, j] > 0.7:
+                strong_positive.append({
+                    'Var1': corr_matrix.columns[i],
+                    'Var2': corr_matrix.columns[j],
+                    'Correlation': corr_matrix.iloc[i, j]
+                })
+    
+    if strong_positive:
+        strong_pos_df = pd.DataFrame(strong_positive).sort_values('Correlation', ascending=False)
+        print(strong_pos_df.head(10).to_string(index=False))
+    else:
+        print("  No correlations > 0.7 found")
+    
+    print("\n--- Strongest Negative Correlations (r < -0.3) ---")
+    strong_negative = []
+    for i in range(len(corr_matrix.columns)):
+        for j in range(i+1, len(corr_matrix.columns)):
+            if corr_matrix.iloc[i, j] < -0.3:
+                strong_negative.append({
+                    'Var1': corr_matrix.columns[i],
+                    'Var2': corr_matrix.columns[j],
+                    'Correlation': corr_matrix.iloc[i, j]
+                })
+    
+    if strong_negative:
+        strong_neg_df = pd.DataFrame(strong_negative).sort_values('Correlation')
+        print(strong_neg_df.head(10).to_string(index=False))
+    else:
+        print("  No correlations < -0.3 found")
+    
+    # Correlations with target variable (flg_alguna)
+    if 'flg_alguna' in df_clean.columns:
+        print("\n--- Correlations with Target Variable (flg_alguna) ---")
+        target_corr = corr_matrix['flg_alguna'].sort_values(ascending=False)
+        print("\nTop 10 positive correlations:")
+        print(target_corr.head(10))
+        print("\nTop 10 negative correlations:")
+        print(target_corr.tail(10))
+    
+    # Visualization 1: Full correlation heatmap
+    fig, axes = plt.subplots(1, 2, figsize=(20, 8))
+    
+    # Complete heatmap (may be crowded)
+    sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', center=0, 
+                vmin=-1, vmax=1, ax=axes[0], cbar_kws={'label': 'Correlation'})
+    axes[0].set_title('Complete Correlation Matrix', fontsize=14, fontweight='bold')
+    
+    # Filtered heatmap: only key variables
+    key_vars = ['edad_meses', 'Peso', 'Talla', 'CabPC', 'Tam_hb',
+                'flg_cognitivo', 'flg_lenguaje', 'flg_motora_fina', 
+                'flg_motora_gruesa', 'flg_social', 'flg_alguna',
+                'cantidad_controles', 'primer_alguna']
+    key_vars = [v for v in key_vars if v in corr_matrix.columns]
+    
+    corr_subset = corr_matrix.loc[key_vars, key_vars]
+    sns.heatmap(corr_subset, annot=True, fmt='.2f', cmap='coolwarm', center=0, 
+                vmin=-1, vmax=1, ax=axes[1], cbar_kws={'label': 'Correlation'})
+    axes[1].set_title('Key Variables Correlation Matrix', fontsize=14, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig('3_6_correlation_heatmap.png', dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    # Visualization 2: Scatter plots of key relationships
+    if 'flg_alguna' in df_clean.columns:
+        fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+        axes = axes.flatten()
+        
+        key_predictors = ['edad_meses', 'Peso', 'Talla', 'Tam_hb', 
+                         'cantidad_controles', 'primer_alguna']
+        
+        for idx, var in enumerate(key_predictors):
+            if var in df_clean.columns and idx < 6:
+                ax = axes[idx]
+                
+                # Separate by deficit status
+                no_deficit = df_clean[df_clean['flg_alguna'] == 0][var].dropna()
+                with_deficit = df_clean[df_clean['flg_alguna'] == 1][var].dropna()
+                
+                ax.hist([no_deficit, with_deficit], bins=30, 
+                       label=['No Deficit', 'With Deficit'],
+                       alpha=0.7, color=['lightblue', 'salmon'])
+                
+                ax.set_xlabel(var, fontsize=10)
+                ax.set_ylabel('Frequency', fontsize=10)
+                ax.set_title(f'{var} by Deficit Status', fontsize=11, fontweight='bold')
+                ax.legend()
+                ax.grid(axis='y', alpha=0.3)
+                
+                # Add statistical test
+                if len(no_deficit) > 0 and len(with_deficit) > 0:
+                    t_stat, p_val = ttest_ind(no_deficit, with_deficit)
+                    ax.text(0.05, 0.95, f'p={p_val:.4f}', 
+                           transform=ax.transAxes, va='top',
+                           bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+        
+        plt.tight_layout()
+        plt.savefig('3_6_predictors_by_deficit.png', dpi=300, bbox_inches='tight')
+        plt.show()
+    
+    # Feature importance based on correlation
+    print("\n--- Variable Selection Recommendations ---")
+    if 'flg_alguna' in df_clean.columns:
+        target_corr_abs = corr_matrix['flg_alguna'].abs().sort_values(ascending=False)
+        print("\nVariables most correlated with developmental deficits:")
+        print(target_corr_abs.head(15))
+        
+        print("\nRecommended predictors for modeling (|r| > 0.1):")
+        strong_predictors = target_corr_abs[target_corr_abs > 0.1].index.tolist()
+        strong_predictors = [p for p in strong_predictors if p != 'flg_alguna']
+        for i, var in enumerate(strong_predictors, 1):
+            print(f"  {i}. {var} (r={corr_matrix.loc[var, 'flg_alguna']:.3f})")
+    
+    return corr_matrix
+
+corr_matrix = section_3_6_correlation_analysis(df_clean)
+```
+## 3.7. Preliminary Insights
+
+---
+
+# 4. Key Patterns and Insights
+
+[To be developed based on EDA findings]
+
+---
+
+# 5. Predictive Modeling
+
+[To be developed in next phase]
+
+---
+
+# 6. Recommendations for TANI
+
+[To be developed based on model results]
+
+---
+
+# 7. Conclusions and Next Steps
+
+[Final synthesis]
+
+---
+
+# References
+
+- Black, M. M., et al. (2017). Early childhood development coming of age: science through the life course. *The Lancet*, 389(10064), 77-90.
+- World Health Organization. (2006). WHO Child Growth Standards.
+- Instituto Nacional de Estadística e Informática (INEI). (2023). Encuesta Demográfica y de Salud Familiar.
+- Díaz AA, Gallestey JB, Vargas-Machuca R, Velarde RA. Desarrollo infantil en zonas pobres de Perú [Child development in poor areas of Peru]. Rev Panam Salud Publica. 2017 Jun 8;41:e71. Spanish. doi: 10.26633/RPSP.2017.71. PMID: 28614480; PMCID: PMC6660845.
+- National Research Council (US) and Institute of Medicine (US) Committee on Integrating the Science of Early Childhood Development; Shonkoff JP, Phillips DA, editors. From Neurons to Neighborhoods: The Science of Early Childhood Development. Washington (DC): National Academies Press (US); 2000. 8, The Developing Brain. Available from: https://www.ncbi.nlm.nih.gov/books/NBK225562/
+- Bronfenbrenner, U. (1979). The ecology of human development. Harvard University Press.
+
+---
+
+# Appendices
+
+## Appendix A: Data Dictionary
+
+[Include complete variable definitions]
+
+## Appendix B: Technical Details
+
+[Code repository, reproducibility instructions]

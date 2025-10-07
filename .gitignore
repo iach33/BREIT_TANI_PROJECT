@@ -16,9 +16,9 @@ wheels/
 *.csv
 *.tsv
 *.cpgz
-
+*.png
 #code outputs
-*.pdf
+#*.pdf
 *.html
 #*.ipynb
 EDA_1.ipynb
