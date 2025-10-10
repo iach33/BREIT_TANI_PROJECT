@@ -1,0 +1,588 @@
+---
+author: 
+- "Angel Choquehuanca"
+- "Luis Torpoco"
+- "Alan Fraquita"
+- "Edson"
+title: "Child Development Project Report: Predictive Analysis of Early Childhood Development Deficits"
+date: "October 10, 2025"
+subtitle: "NGO Applied Project - BREIT"
+format:
+    pdf: default
+toc: true
+echo: false
+margin: 0
+code-fold: true
+fig-width: 7.5
+
+---
+
+
+
+\pagebreak
+
+# Executive Summary
+
+This report presents a comprehensive predictive analysis of early childhood development deficits for Asociación Taller de los Niños (TANI), a Peruvian NGO with over 45 years of experience serving vulnerable children and families. Through data science methodologies, we analyze pre- and post-pandemic health records to develop actionable predictive models that identify children at highest risk of developmental delays.
+
+**Methodology Overview:**
+
+* Multi-phase data consolidation from pre/post-pandemic periods
+* Strategic population filtering to address class imbalance
+* Feature engineering
+
+**Key Findings:**
+
+* Identification of critical risk factors for targeted intervention
+
+<!---
+* [To be completed after final analysis]
+* Identification of critical risk factors for targeted intervention
+* Evidence-based recommendations for resource allocation
+-->
+**Impact:** This work provides TANI with a decision-support framework to optimize early intervention strategies, improving outcomes for vulnerable children through data-driven prioritization.
+
+---
+
+# 1. Introduction and Context
+
+## 1.1. Background on TANI
+
+Asociación Taller de los Niños (TANI) is a non-governmental organization based in Peru, dedicated to improving the quality of life for children and families in vulnerable situations. With over 45 years of operational experience, TANI focuses particularly on the critical early years of life (0-5 years), implementing a comprehensive approach that integrates:
+
+- **Health and Nutrition:** Growth monitoring, nutritional assessment, and intervention programs
+- **Community Strengthening:** Family engagement and capacity building
+- **Preventive Care:** Systematic health check-ups and early detection of developmental issues
+
+## 1.2. Child Development Deficit Context
+
+**Fundamental Concepts of Growth and Development:**
+
+Child growth and development constitute two interrelated sets of indicators of critical utility for determining health status. Growth refers to the physical increase in weight and height/length measurements while development encompasses the progressive improvement of functional capacity and skills across multiple domains (motor, cognitive, language, and socio-emotional). Both processes are fundamentally dependent on the interaction of genetic, nutritional, and environmental factors. Therefore, systematic monitoring of normal developmental trajectories is essential to identify risk factors that may interfere with these processes, ensuring that each child achieves their full developmental potential.
+
+**The Global Burden of Early Childhood Development Deficits:**
+
+Early childhood development (ECD) deficits represent a critical public health challenge in low- and middle-income countries. According to WHO estimates, approximately 250 million children under five years in these settings are at risk of not reaching their developmental potential due to poverty and stunting (Black et al., 2017). These deficits manifest across multiple, often overlapping dimensions:
+
+- **Stunting (Chronic Malnutrition):** Linear growth failure resulting from prolonged nutritional deficiencies, affecting approximately 22% of children globally (UNICEF, 2021)
+- **Wasting (Acute Malnutrition):** Low weight-for-height indicating recent or current severe nutritional deficit
+- **Developmental Delays:** Failure to achieve age-appropriate milestones in gross motor, fine motor, cognitive, language, or social-emotional domains
+- **Micronutrient Deficiencies:** Particularly iron-deficiency anemia, affecting cognitive development and immune function
+
+**The Peruvian Context:**
+
+In Peru, despite significant economic growth over recent decades, substantial disparities persist in child health outcomes:
+
+- **Chronic Malnutrition:** Affects 12.1% of children under 5 nationally, with rates exceeding 25% in rural Andean regions (INEI-ENDES, 2023)
+- **Anemia Prevalence:** Reaches 43.1% in children aged 6-35 months, a critical window for brain development (INEI-ENDES, 2023)
+- **Developmental Delays:** Studies indicate that children exhibit delays in one or more developmental domains, with higher rates among socioeconomically disadvantaged populations (Diaz et al., 2017)
+- **Geographic Inequities:** Urban-rural and coastal-highland disparities create vastly different developmental trajectories for children
+
+**The Critical Window: First 1,000 Days:**
+
+The period from conception to age 3 (approximately 1,000 days) represents a critical window for brain architecture development. During this time, neural connections form at a rate exceeding 1 million per second, establishing the foundational circuitry for all future learning, behavior, and health (Shonkoff & Phillips, 2000). Nutritional and environmental insults during this window can result in:
+
+- **Irreversible Stunting:** Chronic undernutrition affecting linear growth and cognitive capacity
+- **Neurodevelopmental Impairment:** Compromised executive function, memory, and academic readiness
+- **Immunological Vulnerability:** Increased susceptibility to infectious diseases
+- **Intergenerational Transmission:** Girls who experience stunting are more likely to have low-birth-weight infants, perpetuating cycles of disadvantage
+
+**Multidimensional Determinants:**
+
+Following Bronfenbrenner's ecological systems framework (1979), child development results from interactions across multiple levels:
+
+- **Individual Factors:** Genetic endowment, birth characteristics (gestational age, birth weight), sex
+- **Family/Microsystem:** Maternal nutrition and health, breastfeeding practices, caregiver-child interactions, household food security
+- **Community/Exosystem:** Access to healthcare services, availability of nutritious foods, water and sanitation infrastructure
+- **Societal/Macrosystem:** Economic policies, health system organization, cultural beliefs about child-rearing
+
+This multidimensional causality necessitates comprehensive assessment approaches that capture not only anthropometric measurements but also functional developmental capacity and contextual risk factors.
+
+
+
+## 1.3. Project Objectives
+
+This project aims to leverage TANI's data to develop actionable predictive models. Specific objectives include:
+
+### Primary Objective
+Develop and validate machine learning models to predict early childhood development deficits, enabling proactive identification of at-risk children for targeted interventions.
+
+### Secondary Objectives
+1. **Exploratory Analysis:** Conduct comprehensive exploratory data analysis (EDA) to identify patterns, risk factors, and data quality issues
+2. **Feature Engineering:** Transform raw clinical measurements into actionable predictive features
+3. **Model Development:** Compare multiple predictive algorithms and select the optimal approach for deployment
+4. **Actionable Insights:** Provide evidence-based recommendations for TANI's operational and strategic decisions
+5. **Data Infrastructure:** Document data quality issues and recommend improvements for future data collection
+
+## 1.4. Scope and Limitations
+
+### Scope
+- **Temporal Coverage:** Analysis covers post pandemic observations.
+- **Population:** Children aged 0-5 years receiving services at TANI health centers
+- **Predictive Modeling:** Focus on classification models for binary outcomes (deficit vs. normal)
+<!---
+- **Outcome Variables:** Nutritional status (P/T, T/E, P/E) and developmental domains (gross motor, fine motor, cognitive, language, social)
+-->
+
+### Limitations
+- **Data Quality:** As with most real-world clinical data, missing values and measurement inconsistencies are present
+- **Selection Bias:** Population consists of families actively seeking TANI services, which may not represent the broader vulnerable population
+- **Data Bias:** Some variables like deficit may be bias due to the nurse in turn who diagnosed the children. TANI have each age group assigned to certain nurse.
+- **Causality:** While we identify predictive associations, establishing causal relationships requires additional study designs
+- **External Validity:** Models will be optimized for TANI's specific population and may require recalibration for other contexts
+<!-- cambiar will be por are (when done) -->
+
+## 1.5. Key Stakeholders
+
+### Primary Beneficiaries
+- **Children (0-5 years):** Direct beneficiaries through improved early detection and intervention
+- **Families:** Receive targeted support and guidance based on predictive risk assessments
+- **TANI Clinical Staff (nurses):** Gain decision support tools for prioritizing cases and planning interventions
+
+### Secondary Stakeholders
+- **TANI Leadership:** Use insights for strategic planning, resource allocation, and fundraising
+- **Public Health Authorities:** Evidence base for policy recommendations and scaling interventions
+- **Research Community:** Methodological contributions to applied machine learning in global health
+
+---
+
+# 2. Data Reception and Consolidation
+
+## 2.1. Data Sources
+
+The analysis utilizes three primary data sources provided by TANI:
+
+### Internal Data
+1. **MALNUTRITION Sheet:** Longitudinal records of children's growth monitoring and nutritional assessments
+2. **DEVELOPMENT Sheet:** Developmental screening results across five domains
+3. **INITIAL DIAGNOSIS Sheet:** First medical diagnosis when taking the program
+4. **MEDICAL ADVICE Sheet:** Relevant medical recommendations given by the nurses
+<!-- Ubigeo? -->
+
+<!--
+### External Reference Standards
+- **WHO Growth Standards:** Age and sex-specific percentile calculations for anthropometric indicators
+- **Developmental Milestones:** Peru Ministry of Health (MINSA) guidelines for age-appropriate development
+-->
+
+## 2.2. Data Challenges and Quality Issues
+
+Initial data exploration revealed several challenges common to clinical registries:
+
+### Structural Issues
+- **Inconsistent Formatting:** Age represented in mixed formats (days, months, years: "4d", "6m", "1a8m")
+- **Variable Types:** Anthropometric measurements stored as text instead of numeric values
+- **Categorical Encoding:** Multiple encoding schemes for the same concept (e.g., "SI"/"Normal" for development)
+
+### Data Quality Issues
+- **Missing Values:** Inconsistent handling of "not applicable" vs. "not measured" vs. "refused"
+- **Measurement Errors:** Outliers in weight, height, and head circumference requiring validation
+- **Temporal Inconsistencies:** Some records show impossible sequences (e.g., height decreasing over time)
+- **Duplicate Records:** Need to establish deduplication rules for repeated visits
+
+
+```{python}
+#| echo: false
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.express as px
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set display options
+pd.set_option('display.max_colwidth', None)
+pd.set_option('display.max_columns', None)
+
+# Read datasets
+df_desnutricion = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DESNUTRICION")
+df_desarrollo = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DESARROLLO")
+df_desnutricion_old = pd.read_excel("../data/raw/DATA 2009-2016.xlsx", sheet_name="NUTRICION")
+df_desarrollo_old = pd.read_excel("../data/raw/DATA 2009-2016.xlsx", sheet_name="DESARROLLO")
+
+df_pacientes    = pd.read_excel("../data/raw/UBIGEO - CONSEJERÍAS.xlsx", sheet_name="PACIENTES - UBIGEO - DX")
+df_consejerias  = pd.read_excel("../data/raw/UBIGEO - CONSEJERÍAS.xlsx", sheet_name="CONSEJERÍAS")
+```
+
+## 2.3. Consolidation Process
+
+To address these challenges, first we implemented a systematic data consolidation pipeline which consist in merging two main datasets excluding duplicates validated by TANI:
+
+### Phase 1: Data Profiling
+```{python}
+def get_dataframe_profile(df, name):
+    """
+    Generate comprehensive data profile
+    """
+    print(f"\n{'='*60}")
+    print(f"DATASET: {name}")
+    print(f"{'='*60}")
+    
+    print(f"\nShape: {df.shape[0]:,} rows × {df.shape[1]} columns")
+    
+    # Data types
+    print("\nData Types Distribution:")
+    print(df.dtypes.value_counts())
+    
+    # Missing values
+    missing = df.isnull().sum()
+    missing_pct = (missing / len(df) * 100).round(2)
+    missing_df = pd.DataFrame({
+        'Missing_Count': missing,
+        'Missing_Percentage': missing_pct
+    }).sort_values('Missing_Percentage', ascending=False)
+    
+    print("\nTop 10 Variables with Missing Values:")
+    print(missing_df[missing_df['Missing_Count'] > 0].head(10))
+    
+    return missing_df
+
+# Profile both datasets
+profile_desnutricion = get_dataframe_profile(df_desnutricion, "MALNUTRITION")
+profile_desarrollo = get_dataframe_profile(df_desarrollo, "DEVELOPMENT")
+profile_desnutricion_old = get_dataframe_profile(df_desnutricion_old, "MALNUTRITION (PRE PANDEMIC)")
+profile_desarrollo_old = get_dataframe_profile(df_desarrollo_old, "DEVELOPMENT (PRE PANDEMIC)")
+```
+
+**Note:** The following datasets of 'Initial diagnosis' & 'Medical advice' were given after first exploratory analysis which have the objective of narrow down the population. Therefore these dataset considered just recent years.
+
+```{python}
+profile_pacientes_init = get_dataframe_profile(df_pacientes, "INITIAL DIAGNOSIS")
+profile_consejerias = get_dataframe_profile(df_consejerias, "MEDICAL ADVICE")
+```
+
+### Phase 2: Data Cleaning Functions
+
+Functions for parsing variables like Age, Date, Development area, and others were implemented.
+
+### Phase 3: Data Integration
+
+```{python}
+# Create cleaned versions
+df_clean = pd.read_csv('../data/intermediate/tani_consolidado_v1.csv')
+
+# Display cleaning results
+print("\nData Cleaning Results:")
+print(f"Original records (Malnutrition): {len(df_desnutricion):,}")
+print(f"Original records (Development): {len(df_desarrollo):,}")
+print(f"Original records (Malnutrition Pre-pandemic): {len(df_desnutricion_old):,}")
+print(f"Original records (Development Pre-pandemic): {len(df_desarrollo_old):,}")
+print(f"After cleaning and consolidation (pre and post pandemic datasets): {len(df_clean):,}")
+```
+
+## 2.4. Consolidated Dataset Characteristics and created features
+
+### 2.4.1 Consolidated dataset overview
+```{python}
+# Summary statistics
+print(df_clean.info())
+
+print("\nConsolidated Dataset Summary Statistics:")
+print("\nNumeric variables:")
+print(df_clean.describe().T)
+
+```
+
+### 2.4.2 Features created for exploratory analysis
+
+**ORIGINAL FEATURES:**
+
+* **Fecha:** Medical care date for the child
+* **N_HC:** Medical record number assigned to the patient
+* **Sexo:** Child's gender. F: Female; M: Male
+* **Peso:** Recorded weight of the child in kilograms
+* **Talla:** Recorded height/stature of the child in centimeters
+* **CabPC:** Head circumference of the child in centimeters
+* **Diag_Nacimiento:** Birth diagnosis. Values: Normal, Pretérmino (Preterm), BPN (Low Birth Weight), Macrosómico (Macrosomic)
+* **Ganancia_Peso_Talla:** Weight and height gain (adequate or inadequate). Combinations: GIP/GIT, GAP/GIT, GIP/GAT, GAP/GAT
+* **Dx_Nutricional:** Nutritional diagnosis. N: Normal, O: Obesity, R: Risk, S: Overweight, DC: Chronic M., DA: Acute M., DG: Global M.
+* **CN-CA:** Continuity of Nutritional Dx. CN: New Case, CA: Old Case
+* **Mantiene_Diag_Fav/Desf:** Nutritional diagnosis follow-up. Fav: Favorable, Desf: Unfavorable
+* **Recuperado:** Recovery in nutritional diagnosis (e.g.: Global M. to Normal, Risk to Normal, etc.)
+* **Lactancia:** Current breastfeeding type (up to 6 months). LME: Exclusive Breastfeeding, LMX: Mixed Breastfeeding, LA: Artificial Feeding
+* **Razón:** Reason for LMX or Artificial. 1: Others, 2: Own Will, 3: Low Production, 4: Study/Work, 5: Medical Indication
+* **ACA:** Active complementary feeding. YES/NO
+* **Tam_para:** Parasite test result. Positive/Negative
+* **Tam_graha:** Graham test result. Positive/Negative
+* **Tam_hb:** Hemoglobin dosage result
+* **T/E_cat:** Height/Age percentile category. N: Normal, R: Risk, DC: Chronic M.
+* **P/E_cat:** Weight/Age percentile category. N: Normal, R: Risk, DA: Acute M.
+* **P/T_cat:** Weight/Height percentile category. N: Normal, O: Obesity, S: Overweight, DA: Acute M.
+
+**TRANSFORMATIONS:**
+
+* **edad_meses:** Child's age expressed in months
+* **flg_cognitivo:** Binary flag for cognitive development area (0: Normal, 1: Deficit)
+* **flg_lenguaje:** Binary flag for language development area (0: Normal, 1: Deficit)
+* **flg_motora_fina:** Binary flag for fine motor development area (0: Normal, 1: Deficit)
+* **flg_motora_gruesa:** Binary flag for gross motor development area (0: Normal, 1: Deficit)
+* **flg_social:** Binary flag for social development area (0: Normal, 1: Deficit)
+* **flg_alguna:** Flag indicating if there is any deficit in any development area (0: No, 1: Yes)
+* **flg_total:** Flag indicating if there is deficit in all development areas
+* **flg_social_lenguaje:** Binary flag for language or social  development area (0: Normal, 1: Deficit)
+* **control_esperado:** Expected check-up number according to child's age
+* **primer_alguna:** Check-up number where the first deficit was detected (flg_alguna=1)
+* **primer_control_esperado:** First expected check-up number according to child's age
+* **ultimo_control:** Last recorded check-up number
+* **cant_controles_primer_alguna:** Number of check-ups until first deficit detection
+* **cantidad_controles:** Total number of check-ups performed
+* **num_controles_previos_deficit:** Number of previous check-ups before deficit detection
+* **nro_control_recreado:** Recreated or recalculated check-up number
+* **num_controles_posteriores_deficit:** Number of check-ups after detected deficit
+
+---
+
+# 3. Exploratory Data Analysis (EDA)
+
+## 3.1. Defining population
+
+For the definition of the population to work with TANI recommended to focus on social and language areas. This due to the rare cases in motor development deficits. On the other hand, the election of records since 2023 were defined because of imbalanced target in previous years. When validating with TANI they confirmed that there had been changed when defining "deficits" and that is why there is more cases in recent years. 
+
+
+```{python}
+df = pd.read_csv("../data/intermediate/tani_preprocessed_final_v2.csv")
+# Extraer año
+df['year'] = pd.to_datetime(df['Fecha']).dt.year
+
+print("="*80)
+print("EXPLORATORY ANALYSIS: POPULATION DEFINITION (BY PATIENT N_HC)")
+print("="*80)
+
+# AGGREGATION BY PATIENT (N_HC) - USE LAST RECORD
+df_pacientes = df.sort_values(['N_HC', 'Fecha']).groupby('N_HC').last().reset_index()
+
+print(f"\n Total records in dataset: {len(df):,}")
+print(f" Total unique patients (N_HC): {len(df_pacientes):,}")
+
+# 1. GENERAL SUMMARY BY PATIENT
+print("\n DEFICIT PREVALENCE BY PATIENT")
+print("-"*80)
+total_pacientes = len(df_pacientes)
+targets = {
+    'flg_alguna': 'Any deficit',
+    'flg_lenguaje': 'Language deficit',
+    'flg_social': 'Social deficit',
+    'flg_social_lenguaje': 'Social OR Language deficit'
+}
+
+for col, desc in targets.items():
+    count = (df_pacientes[col] == 1).sum()
+    pct = (count / total_pacientes * 100)
+    print(f"{desc:30s}: {count:6,d} ({pct:5.2f}%)")
+
+```
+
+```{python}
+# Summary by year
+resumen_anio = df_pacientes.groupby('year').agg({
+    'N_HC': 'count'
+}).rename(columns={'N_HC': 'Patients'})
+
+# Create figure
+fig, ax = plt.subplots(figsize=(12, 7))
+
+# Bar chart
+ax.bar(resumen_anio.index, resumen_anio['Patients'], color='steelblue', alpha=0.7, edgecolor='navy', linewidth=1.2)
+
+# Labels and title
+ax.set_xlabel('Year', fontsize=13, fontweight='bold')
+ax.set_ylabel('Number of Patients', fontsize=13, fontweight='bold')
+ax.set_title('Patient Volume by Year (Last Check-up)', fontsize=15, fontweight='bold', pad=20)
+
+# Rotate x-axis labels
+ax.tick_params(axis='x', rotation=45, labelsize=11)
+ax.tick_params(axis='y', labelsize=11)
+
+# Grid
+ax.grid(True, alpha=0.3, axis='y', linestyle='--')
+
+# Annotate totals on bars
+for i, v in enumerate(resumen_anio['Patients']):
+    ax.text(resumen_anio.index[i], v + 50, str(v), 
+            ha='center', va='bottom', fontsize=9, fontweight='bold')
+
+# Styling
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+plt.tight_layout()
+plt.savefig('patient_volume_by_year.png', dpi=300, bbox_inches='tight', facecolor='white')
+print("✓ Chart saved as: patient_volume_by_year.png")
+plt.show()
+```
+
+```{python}
+print("\n\n PREVALENCE BY YEAR (LAST CHECK-UP OF EACH PATIENT)")
+print("-"*80)
+
+resumen_anio = df_pacientes.groupby('year').agg({
+    'N_HC': 'count',
+    'flg_alguna': lambda x: (x == 1).sum(),
+    'flg_lenguaje': lambda x: (x == 1).sum(),
+    'flg_social': lambda x: (x == 1).sum(),
+    'flg_social_lenguaje': lambda x: (x == 1).sum()
+}).rename(columns={'N_HC': 'Patients'})
+
+resumen_anio['%_alguna'] = (resumen_anio['flg_alguna'] / resumen_anio['Patients'] * 100).round(2)
+resumen_anio['%_lenguaje'] = (resumen_anio['flg_lenguaje'] / resumen_anio['Patients'] * 100).round(2)
+resumen_anio['%_social'] = (resumen_anio['flg_social'] / resumen_anio['Patients'] * 100).round(2)
+resumen_anio['%_soc_leng'] = (resumen_anio['flg_social_lenguaje'] / resumen_anio['Patients'] * 100).round(2)
+
+print(resumen_anio[['Patients', 'flg_alguna', '%_alguna', 'flg_lenguaje', '%_lenguaje', 
+                     'flg_social', '%_social', 'flg_social_lenguaje', '%_soc_leng']])
+```
+
+The final population meets the following filters:
+```{python}
+print("\n\n3. FILTER CRITERIA ANALYSIS (YEAR >= 2023)")
+print("-"*80)
+
+df_2023 = df_pacientes[df_pacientes['year'] >= 2023].copy()
+print(f"Total patients with last check-up 2023+: {len(df_2023):,}")
+
+# Aplicar filtros propuestos
+cond1 = df_2023['primer_control_esperado'].isin([1, 2, 3])
+cond2 = df_2023['cant_controles_primer_alguna'] >= 6
+cond3 = df_2023['ultimo_control'] >= 19
+
+print(f"\nPatients with primer_alguna en [1,2,3]: {cond1.sum():,}")
+print(f"Patients with cant_controles_primer_alguna >= 6: {cond2.sum():,}")
+print(f"Patients with ultimo_control >= 19: {cond3.sum():,}")
+print(f"Patients with ALL criteria: {(cond1 & cond2 & cond3).sum():,}")
+
+# Estadísticas de la población filtrada
+df_filtrado = df_2023[cond1 & cond2 & cond3]
+'''print(f"\n POBLACIÓN FILTRADA:")
+print(f"   Total: {len(df_filtrado):,} pacientes")
+print(f"   Con déficit (flg_alguna=1): {(df_filtrado['flg_alguna']==1).sum():,}")
+print(f"   Sin déficit (flg_alguna=0): {(df_filtrado['flg_alguna']==0).sum():,}")
+if len(df_filtrado) > 0:
+    print(f"   Balance clase positiva: {(df_filtrado['flg_alguna']==1).sum()/len(df_filtrado)*100:.2f}%")'''
+
+print(f"\n FILTERED POPULATION:")
+print(f"   Total: {len(df_filtrado):,} patients")
+print(f"   With deficit (flg_social_lenguaje=1): {(df_filtrado['flg_social_lenguaje']==1).sum():,}")
+print(f"   Without deficit (flg_social_lenguaje=0): {(df_filtrado['flg_social_lenguaje']==0).sum():,}")
+if len(df_filtrado) > 0:
+    print(f"   Positive class balance: {(df_filtrado['flg_social_lenguaje']==1).sum()/len(df_filtrado)*100:.2f}%")
+```
+
+## 3.2. Descriptive Statistics
+
+
+## 3.3. Outlier Detection and Treatment
+
+Some numeric variables were treated with the 99th percentile after validating that most of the outliers were human error when transcribing to their databases from physical records.
+
+![Original records TANI](historia_clinica_TANI.jpeg)
+
+Before treatment:
+```{python}
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+for idx, col in enumerate(['Peso', 'Talla', 'CabPC']):
+    # Convertir a numérico y eliminar NaN
+    data = pd.to_numeric(df_clean[col], errors='coerce').dropna().tolist()
+    
+    # Solo graficar si hay datos
+    if len(data) > 0:
+        axes[idx].boxplot(data)
+        axes[idx].set_title(f'Outliers in {col}')
+        axes[idx].set_ylabel(col)
+        axes[idx].grid(True, alpha=0.3)
+    else:
+        axes[idx].text(0.5, 0.5, 'No data', ha='center', va='center')
+        axes[idx].set_title(f'Outliers in {col}')
+
+plt.tight_layout()
+plt.show()
+```
+
+After imputation:
+```{python}
+# Imputacion por el percentile 99
+df_clean['Peso']   = pd.to_numeric(df_clean['Peso'], errors='coerce')
+df_clean['Talla']   = pd.to_numeric(df_clean['Talla'], errors='coerce')
+df_clean['CabPC']   = pd.to_numeric(df_clean['CabPC'], errors='coerce')
+
+for col in ['Peso','Talla','CabPC']:
+    lower = df_clean[col].quantile(0.001)
+    upper = df_clean[col].quantile(0.999)
+    df_clean[col] = np.clip(df_clean[col], lower, upper)
+
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+for idx, col in enumerate(['Peso', 'Talla', 'CabPC']):
+    # Convertir a numérico y eliminar NaN
+    data = pd.to_numeric(df_clean[col], errors='coerce').dropna().tolist()
+    
+    # Solo graficar si hay datos
+    if len(data) > 0:
+        axes[idx].boxplot(data)
+        axes[idx].set_title(f'Outliers in {col}')
+        axes[idx].set_ylabel(col)
+        axes[idx].grid(True, alpha=0.3)
+    else:
+        axes[idx].text(0.5, 0.5, 'No data', ha='center', va='center')
+        axes[idx].set_title(f'Outliers in {col}')
+
+plt.tight_layout()
+plt.show()
+
+```
+## 3.4. Correlation Analysis
+
+
+## 3.5. Preliminary Insights
+
+---
+
+# 4. Key Patterns and Insights
+
+[To be developed based on EDA findings]
+
+---
+
+# 5. Predictive Modeling
+
+[To be developed in next phase]
+
+---
+
+# 6. Recommendations for TANI
+
+[To be developed based on model results]
+
+---
+
+# 7. Conclusions and Next Steps
+
+[Final synthesis]
+
+---
+
+# References
+
+- Black, M. M., et al. (2017). Early childhood development coming of age: science through the life course. *The Lancet*, 389(10064), 77-90.
+- World Health Organization. (2006). WHO Child Growth Standards.
+- Instituto Nacional de Estadística e Informática (INEI). (2023). Encuesta Demográfica y de Salud Familiar.
+- Díaz AA, Gallestey JB, Vargas-Machuca R, Velarde RA. Desarrollo infantil en zonas pobres de Perú [Child development in poor areas of Peru]. Rev Panam Salud Publica. 2017 Jun 8;41:e71. Spanish. doi: 10.26633/RPSP.2017.71. PMID: 28614480; PMCID: PMC6660845.
+- National Research Council (US) and Institute of Medicine (US) Committee on Integrating the Science of Early Childhood Development; Shonkoff JP, Phillips DA, editors. From Neurons to Neighborhoods: The Science of Early Childhood Development. Washington (DC): National Academies Press (US); 2000. 8, The Developing Brain. Available from: https://www.ncbi.nlm.nih.gov/books/NBK225562/
+- Bronfenbrenner, U. (1979). The ecology of human development. Harvard University Press.
+
+---
+
+<!--
+# Appendices
+
+## Appendix A: Data Dictionary
+
+[Include complete variable definitions]
+
+## Appendix B: Technical Details
+
+[Code repository, reproducibility instructions]
+
+-->

@@ -33,10 +33,13 @@ This report presents a comprehensive predictive analysis of early childhood deve
 
 **Key Findings:**
 
+* Identification of critical risk factors for targeted intervention
+
+<!---
 * [To be completed after final analysis]
 * Identification of critical risk factors for targeted intervention
 * Evidence-based recommendations for resource allocation
-
+-->
 **Impact:** This work provides TANI with a decision-support framework to optimize early intervention strategies, improving outcomes for vulnerable children through data-driven prioritization.
 
 ---
@@ -99,7 +102,7 @@ This multidimensional causality necessitates comprehensive assessment approaches
 
 ## 1.3. Project Objectives
 
-This project aims to leverage TANI's longitudinal data to develop actionable predictive models. Specific objectives include:
+This project aims to leverage TANI's data to develop actionable predictive models. Specific objectives include:
 
 ### Primary Objective
 Develop and validate machine learning models to predict early childhood development deficits, enabling proactive identification of at-risk children for targeted interventions.
@@ -116,12 +119,15 @@ Develop and validate machine learning models to predict early childhood developm
 ### Scope
 - **Temporal Coverage:** Analysis covers post pandemic observations.
 - **Population:** Children aged 0-5 years receiving services at TANI health centers
-- **Outcome Variables:** Nutritional status (P/T, T/E, P/E) and developmental domains (gross motor, fine motor, cognitive, language, social)
 - **Predictive Modeling:** Focus on classification models for binary outcomes (deficit vs. normal)
+<!---
+- **Outcome Variables:** Nutritional status (P/T, T/E, P/E) and developmental domains (gross motor, fine motor, cognitive, language, social)
+-->
 
 ### Limitations
 - **Data Quality:** As with most real-world clinical data, missing values and measurement inconsistencies are present
 - **Selection Bias:** Population consists of families actively seeking TANI services, which may not represent the broader vulnerable population
+- **Data Bias:** Some variables like deficit may be bias due to the nurse in turn who diagnosed the children. TANI have each age group assigned to certain nurse.
 - **Causality:** While we identify predictive associations, establishing causal relationships requires additional study designs
 - **External Validity:** Models will be optimized for TANI's specific population and may require recalibration for other contexts
 <!-- cambiar will be por are (when done) -->
@@ -149,12 +155,15 @@ The analysis utilizes three primary data sources provided by TANI:
 ### Internal Data
 1. **MALNUTRITION Sheet:** Longitudinal records of children's growth monitoring and nutritional assessments
 2. **DEVELOPMENT Sheet:** Developmental screening results across five domains
+3. **INITIAL DIAGNOSIS Sheet:** First medical diagnosis when taking the program
+4. **MEDICAL ADVICE Sheet:** Relevant medical recommendations given by the nurses
 <!-- Ubigeo? -->
 
-
+<!--
 ### External Reference Standards
 - **WHO Growth Standards:** Age and sex-specific percentile calculations for anthropometric indicators
 - **Developmental Milestones:** Peru Ministry of Health (MINSA) guidelines for age-appropriate development
+-->
 
 ## 2.2. Data Challenges and Quality Issues
 
@@ -166,15 +175,11 @@ Initial data exploration revealed several challenges common to clinical registri
 - **Categorical Encoding:** Multiple encoding schemes for the same concept (e.g., "SI"/"Normal" for development)
 
 ### Data Quality Issues
-- **Missing Values:** Systematic patterns of missingness in periods closed to pandemic year.
+- **Missing Values:** Inconsistent handling of "not applicable" vs. "not measured" vs. "refused"
 - **Measurement Errors:** Outliers in weight, height, and head circumference requiring validation
 - **Temporal Inconsistencies:** Some records show impossible sequences (e.g., height decreasing over time)
 - **Duplicate Records:** Need to establish deduplication rules for repeated visits
 
-### Documentation Gaps
-- **Sparse Metadata:** Limited information on data collection protocols and quality control procedures
-- **Variable Definitions:** Some variables lack clear operational definitions in the data dictionary
-- **Missing Codes:** Inconsistent handling of "not applicable" vs. "not measured" vs. "refused"
 
 ```{python}
 #| echo: false
@@ -192,17 +197,18 @@ pd.set_option('display.max_colwidth', None)
 pd.set_option('display.max_columns', None)
 
 # Read datasets
-df_desnutricion = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", 
-                                 sheet_name="DESNUTRICION")
-df_desarrollo = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", 
-                               sheet_name="DESARROLLO")
-df_diccionario = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", 
-                                sheet_name="DICCIONARIO DE DATOS")
+df_desnutricion = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DESNUTRICION")
+df_desarrollo = pd.read_excel("../Data/raw/DATA PROYECTO BREIT.xlsx", sheet_name="DESARROLLO")
+df_desnutricion_old = pd.read_excel("../data/raw/DATA 2009-2016.xlsx", sheet_name="NUTRICION")
+df_desarrollo_old = pd.read_excel("../data/raw/DATA 2009-2016.xlsx", sheet_name="DESARROLLO")
+
+df_pacientes    = pd.read_excel("../data/raw/UBIGEO - CONSEJERÍAS.xlsx", sheet_name="PACIENTES - UBIGEO - DX")
+df_consejerias  = pd.read_excel("../data/raw/UBIGEO - CONSEJERÍAS.xlsx", sheet_name="CONSEJERÍAS")
 ```
 
 ## 2.3. Consolidation Process
 
-To address these challenges, we implemented a systematic data consolidation pipeline:
+To address these challenges, first we implemented a systematic data consolidation pipeline which consist in merging two main datasets excluding duplicates validated by TANI:
 
 ### Phase 1: Data Profiling
 ```{python}
@@ -234,115 +240,103 @@ def get_dataframe_profile(df, name):
     return missing_df
 
 # Profile both datasets
-profile_desnutricion = get_dataframe_profile(df_desnutricion, "DESNUTRICION")
-profile_desarrollo = get_dataframe_profile(df_desarrollo, "DESARROLLO")
+profile_desnutricion = get_dataframe_profile(df_desnutricion, "MALNUTRITION")
+profile_desarrollo = get_dataframe_profile(df_desarrollo, "DEVELOPMENT")
+profile_desnutricion_old = get_dataframe_profile(df_desnutricion_old, "MALNUTRITION (PRE PANDEMIC)")
+profile_desarrollo_old = get_dataframe_profile(df_desarrollo_old, "DEVELOPMENT (PRE PANDEMIC)")
+```
+
+**Note:** The following datasets of 'Initial diagnosis' & 'Medical advice' were given after first exploratory analysis which have the objective of narrow down the population. Therefore these dataset considered just recent years.
+
+```{python}
+profile_pacientes_init = get_dataframe_profile(df_pacientes, "INITIAL DIAGNOSIS")
+profile_consejerias = get_dataframe_profile(df_consejerias, "MEDICAL ADVICE")
 ```
 
 ### Phase 2: Data Cleaning Functions
 
-Functions for parsing variables like Age, Development area, and others were implemented.
-```{python}
-def parse_age_to_months(age_str):
-    """
-    Convert mixed age format to numeric months
-    Examples: '6m' -> 6.0, '1a8m' -> 20.0, '4d' -> 0.13
-    """
-    if pd.isna(age_str):
-        return np.nan
-    
-    age_str = str(age_str).strip().lower()
-    months = 0.0
-    
-    # Extract years
-    if 'a' in age_str:
-        years = age_str.split('a')[0]
-        if years.isdigit():
-            months += int(years) * 12
-        age_str = age_str.split('a')[1] if 'a' in age_str else ""
-    
-    # Extract months
-    if 'm' in age_str:
-        month_str = age_str.split('m')[0]
-        if month_str.isdigit():
-            months += int(month_str)
-    
-    # Extract days
-    if 'd' in age_str:
-        days = age_str.split('d')[0]
-        if days.isdigit():
-            months += int(days) / 30.0  # Approximate
-    
-    return months if months > 0 else np.nan
-
-
-def clean_numeric_field(series):
-    """
-    Convert text-based numeric fields to float
-    Handle commas, spaces, and other formatting issues
-    """
-    return pd.to_numeric(
-        series.astype(str)
-              .str.replace(',', '.')
-              .str.strip(),
-        errors='coerce'
-    )
-
-
-def standardize_categorical(series, mapping_dict):
-    """
-    Standardize categorical encodings
-    """
-    return series.str.strip().str.upper().map(mapping_dict)
-```
+Functions for parsing variables like Age, Date, Development area, and others were implemented.
 
 ### Phase 3: Data Integration
 
 ```{python}
 # Create cleaned versions
-df_clean = pd.read_csv("../data/intermediate/tani_preprocessed_final_v2.csv")
-
-# Clean age
-#df_clean['edad_meses'] = df_clean['Edad'].apply(parse_age_to_months)
-
-# Clean anthropometric measurements
-df_clean['Peso_Num'] = clean_numeric_field(df_clean['Peso'])
-df_clean['Talla_Num'] = clean_numeric_field(df_clean['Talla'])
-df_clean['PC_Num'] = clean_numeric_field(df_clean['CabPC'])
-
-# Clean hemoglobin
-if 'Tam_hb' in df_clean.columns:
-    df_clean['Hemoglobina'] = clean_numeric_field(df_clean['Tam_hb'])
+df_clean = pd.read_csv('../data/intermediate/tani_consolidado_v1.csv')
 
 # Display cleaning results
 print("\nData Cleaning Results:")
-print(f"Original records: {len(df_desnutricion):,}")
+print(f"Original records (Malnutrition): {len(df_desnutricion):,}")
+print(f"Original records (Development): {len(df_desarrollo):,}")
+print(f"Original records (Malnutrition Pre-pandemic): {len(df_desnutricion_old):,}")
+print(f"Original records (Development Pre-pandemic): {len(df_desarrollo_old):,}")
 print(f"After cleaning and consolidation (pre and post pandemic datasets): {len(df_clean):,}")
-print(f"\nAge conversion success rate: {df_clean['edad_meses'].notna().sum() / len(df_clean) * 100:.1f}%")
-print(f"Weight conversion success rate: {df_clean['Peso_Num'].notna().sum() / len(df_clean) * 100:.1f}%")
-print(f"Height conversion success rate: {df_clean['Talla_Num'].notna().sum() / len(df_clean) * 100:.1f}%")
 ```
 
-## 2.4. Consolidated Dataset Characteristics
+## 2.4. Consolidated Dataset Characteristics and created features
 
+### 2.4.1 Consolidated dataset overview
 ```{python}
 # Summary statistics
-print("\nConsolidated Dataset Summary Statistics:")
-print("\nAnthropometric Measurements:")
-print(df_clean[['edad_meses', 'Peso_Num', 'Talla_Num', 'PC_Num']].describe())
+print(df_clean.info())
 
-print("\nNutritional Status Distribution:")
-for col in ['P/T', 'T/E', 'P/E']:
-    if col in df_clean.columns:
-        print(f"\n{col}:")
-        print(df_clean[col].value_counts())
+print("\nConsolidated Dataset Summary Statistics:")
+print("\nNumeric variables:")
+print(df_clean.describe().T)
+
 ```
+
+### 2.4.2 Features created for exploratory analysis
+
+**ORIGINAL FEATURES:**
+
+* **Fecha:** Medical care date for the child
+* **N_HC:** Medical record number assigned to the patient
+* **Sexo:** Child's gender. F: Female; M: Male
+* **Peso:** Recorded weight of the child in kilograms
+* **Talla:** Recorded height/stature of the child in centimeters
+* **CabPC:** Head circumference of the child in centimeters
+* **Diag_Nacimiento:** Birth diagnosis. Values: Normal, Pretérmino (Preterm), BPN (Low Birth Weight), Macrosómico (Macrosomic)
+* **Ganancia_Peso_Talla:** Weight and height gain (adequate or inadequate). Combinations: GIP/GIT, GAP/GIT, GIP/GAT, GAP/GAT
+* **Dx_Nutricional:** Nutritional diagnosis. N: Normal, O: Obesity, R: Risk, S: Overweight, DC: Chronic M., DA: Acute M., DG: Global M.
+* **CN-CA:** Continuity of Nutritional Dx. CN: New Case, CA: Old Case
+* **Mantiene_Diag_Fav/Desf:** Nutritional diagnosis follow-up. Fav: Favorable, Desf: Unfavorable
+* **Recuperado:** Recovery in nutritional diagnosis (e.g.: Global M. to Normal, Risk to Normal, etc.)
+* **Lactancia:** Current breastfeeding type (up to 6 months). LME: Exclusive Breastfeeding, LMX: Mixed Breastfeeding, LA: Artificial Feeding
+* **Razón:** Reason for LMX or Artificial. 1: Others, 2: Own Will, 3: Low Production, 4: Study/Work, 5: Medical Indication
+* **ACA:** Active complementary feeding. YES/NO
+* **Tam_para:** Parasite test result. Positive/Negative
+* **Tam_graha:** Graham test result. Positive/Negative
+* **Tam_hb:** Hemoglobin dosage result
+* **T/E_cat:** Height/Age percentile category. N: Normal, R: Risk, DC: Chronic M.
+* **P/E_cat:** Weight/Age percentile category. N: Normal, R: Risk, DA: Acute M.
+* **P/T_cat:** Weight/Height percentile category. N: Normal, O: Obesity, S: Overweight, DA: Acute M.
+
+**TRANSFORMATIONS:**
+
+* **edad_meses:** Child's age expressed in months
+* **flg_cognitivo:** Binary flag for cognitive development area (0: Normal, 1: Deficit)
+* **flg_lenguaje:** Binary flag for language development area (0: Normal, 1: Deficit)
+* **flg_motora_fina:** Binary flag for fine motor development area (0: Normal, 1: Deficit)
+* **flg_motora_gruesa:** Binary flag for gross motor development area (0: Normal, 1: Deficit)
+* **flg_social:** Binary flag for social development area (0: Normal, 1: Deficit)
+* **flg_alguna:** Flag indicating if there is any deficit in any development area (0: No, 1: Yes)
+* **flg_total:** Flag indicating if there is deficit in all development areas
+* **flg_social_lenguaje:** Binary flag for language or social  development area (0: Normal, 1: Deficit)
+* **control_esperado:** Expected check-up number according to child's age
+* **primer_alguna:** Check-up number where the first deficit was detected (flg_alguna=1)
+* **ultimo_control:** Last recorded check-up number
+* **cant_controles_primer_alguna:** Number of check-ups until first deficit detection
+* **cantidad_controles:** Total number of check-ups performed
+* **num_controles_previos_deficit:** Number of previous check-ups before deficit detection
+* **nro_control_recreado:** Recreated or recalculated check-up number
+* **num_controles_posteriores_deficit:** Number of check-ups after detected deficit
 
 ---
 
 # 3. Exploratory Data Analysis (EDA)
 
 ## 3.1. Dataset Overview
-
+<!-- 
 ```{python}
 """
 TANI Project - Exploratory Data Analysis
@@ -1237,6 +1231,8 @@ def section_3_6_correlation_analysis(df_clean):
 
 corr_matrix = section_3_6_correlation_analysis(df_clean)
 ```
+
+-->
 ## 3.7. Preliminary Insights
 
 ---
