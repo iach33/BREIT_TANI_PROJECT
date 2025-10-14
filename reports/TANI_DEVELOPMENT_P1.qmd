@@ -3,7 +3,7 @@ author:
 - "Angel Choquehuanca"
 - "Luis Torpoco"
 - "Alan Fraquita"
-- "Edson"
+- "Edson Hoyos"
 title: "Child Development Project Report: Predictive Analysis of Early Childhood Development Deficits"
 date: "October 10, 2025"
 subtitle: "NGO Applied Project - BREIT"
@@ -532,32 +532,60 @@ plt.tight_layout()
 plt.show()
 
 ```
+<!--
 ## 3.4. Correlation Analysis
+-->
 
+## 3.4. Preliminary Insights
 
+<!--
 ## 3.5. Preliminary Insights
+-->
+
+From the new definition population analice de main variables that affect that impact in development children. The objective is find patterns related to social and language deficit, to this we made bins graphic of our variables
+
+![Birth Weight](Birth_weight_A.png)
+The weight distribution shows an accumulation of range from 3.2-3.9kg and minimum cases of deficit, as a good pregnant follow. That not happened in extremes of the graph, where to a lower (desnutrition) o higher (metabolic issues) weight there are more cases of deficit. That occurs
+
+![Gestational age](Gestational_age_A.png)
+Patients born after 37 weeks have lower values of deficit (<3%). In the other hand, premature cases have more deficient patients. This case, show us the preterm impact where the incomplete development increase the nutritional sistem
+
+![Vaccine counseling](Vaccine_counseling_A.png)
+The graph show a inverse relation between the number of vaccine session and % of deficit. A child with low participation show a highest deficit rate in contrast the other one received it.
+
+![Age before deficit](Vaccine_counseling_A.png)
+The age analysis explain that most deficits cases are in earlier ages than older (0 to 12 months). The deficit rate of childreen with 28 moths decreases to 0. That explain that the firsts 12 months are critical to prevent and made a good monitoring of the childreen. Those to prevent nutritional and development problems 
+
+![Min height-for-age percentile](Min_height_per_age_A.png)
+One of the metrics or limitles that help make monitoring of development. The values down the limit of -2 are related to nutritional deficit and up values like +2 or more has overweight. This trend of hieght for age value help to monitore the growth curve
+
+**Conclusion**: From the new findings of the study population shows that early ages and factors (weight,premature,counseling,monitoring, height-age value) that has a negative impact on risk growth patterns and will be so helpfull to focus on especific preventions interventions.
 
 ---
 
+<!--
 # 4. Key Patterns and Insights
-
 [To be developed based on EDA findings]
 
 ---
+-->
 
-# 5. Predictive Modeling
+
+
+
+# 4. Predictive Modeling
 
 [To be developed in next phase]
 
 ---
 
-# 6. Recommendations for TANI
+# 5. Recommendations for TANI
 
 [To be developed based on model results]
 
 ---
 
-# 7. Conclusions and Next Steps
+# 6. Conclusions and Next Steps
 
 [Final synthesis]
 
@@ -565,12 +593,12 @@ plt.show()
 
 # References
 
-- Black, M. M., et al. (2017). Early childhood development coming of age: science through the life course. *The Lancet*, 389(10064), 77-90.
-- World Health Organization. (2006). WHO Child Growth Standards.
-- Instituto Nacional de Estadística e Informática (INEI). (2023). Encuesta Demográfica y de Salud Familiar.
-- Díaz AA, Gallestey JB, Vargas-Machuca R, Velarde RA. Desarrollo infantil en zonas pobres de Perú [Child development in poor areas of Peru]. Rev Panam Salud Publica. 2017 Jun 8;41:e71. Spanish. doi: 10.26633/RPSP.2017.71. PMID: 28614480; PMCID: PMC6660845.
-- National Research Council (US) and Institute of Medicine (US) Committee on Integrating the Science of Early Childhood Development; Shonkoff JP, Phillips DA, editors. From Neurons to Neighborhoods: The Science of Early Childhood Development. Washington (DC): National Academies Press (US); 2000. 8, The Developing Brain. Available from: https://www.ncbi.nlm.nih.gov/books/NBK225562/
-- Bronfenbrenner, U. (1979). The ecology of human development. Harvard University Press.
+- Black, M. M., Walker, S. P., Fernald, L. C. H., Andersen, C. T., DiGirolamo, A. M., Lu, C., … Grantham-McGregor, S. (2017). Early childhood development coming of age: Science through the life course. The Lancet, 389(10064), 77–90. https://doi.org/10.1016/S0140-6736(16)31389-7
+- World Health Organization. (2006). WHO Child Growth Standards. World Health Organization. https://www.who.int/tools/child-growth-standards
+- Instituto Nacional de Estadística e Informática (INEI). (2023). Encuesta Demográfica y de Salud Familiar. Instituto Nacional de Estadística e Informática. https://www.inei.gob.pe/
+- Díaz, A. A., Gallestey, J. B., Vargas-Machuca, R., & Velarde, R. A. (2017). Desarrollo infantil en zonas pobres de Perú [Child development in poor areas of Peru]. Revista Panamericana de Salud Pública, 41, e71. https://doi.org/10.26633/RPSP.2017.71
+- National Research Council (US) & Institute of Medicine (US) Committee on Integrating the Science of Early Childhood Development. (2000). From neurons to neighborhoods: The science of early childhood development (J. P. Shonkoff & D. A. Phillips, Eds.). National Academies Press. https://www.ncbi.nlm.nih.gov/books/NBK225562/
+- Bronfenbrenner, U. (1979). The ecology of human development: Experiments by nature and design. Harvard University Press.
 
 ---
 
