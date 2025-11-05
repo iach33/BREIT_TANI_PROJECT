@@ -375,7 +375,7 @@ for col, desc in targets.items():
 ```
 
 ```{python}
-# Summary by year
+'''# Summary by year
 resumen_anio = df_pacientes.groupby('year').agg({
     'N_HC': 'count'
 }).rename(columns={'N_HC': 'Patients'})
@@ -410,7 +410,66 @@ ax.spines['right'].set_visible(False)
 plt.tight_layout()
 plt.savefig('patient_volume_by_year.png', dpi=300, bbox_inches='tight', facecolor='white')
 print("✓ Chart saved as: patient_volume_by_year.png")
+plt.show()'''
+
+# Aggregate by year including target
+resumen_anio = df_pacientes.groupby('year').agg({
+    'N_HC': 'count',
+    'flg_social_lenguaje': lambda x: (x == 1).sum()
+}).rename(columns={'N_HC': 'Patients', 'flg_social_lenguaje': 'With_Deficit'})
+
+# Calculate percentage
+resumen_anio['Deficit_Rate'] = (resumen_anio['With_Deficit'] / resumen_anio['Patients'] * 100).round(2)
+
+# Create figure with dual y-axis
+fig, ax1 = plt.subplots(figsize=(14, 7))
+
+# Primary axis: Bar chart for patient volume
+color_bars = 'steelblue'
+ax1.bar(resumen_anio.index, resumen_anio['Patients'], color=color_bars, alpha=0.7, 
+        edgecolor='navy', linewidth=1.2, label='Total Patients')
+ax1.set_xlabel('Year', fontsize=13, fontweight='bold')
+ax1.set_ylabel('Number of Patients', fontsize=13, fontweight='bold', color=color_bars)
+ax1.tick_params(axis='y', labelcolor=color_bars, labelsize=11)
+ax1.tick_params(axis='x', rotation=45, labelsize=11)
+ax1.grid(True, alpha=0.3, axis='y', linestyle='--')
+
+# Secondary axis: Line chart for deficit rate
+ax2 = ax1.twinx()
+color_line = '#e74c3c'
+ax2.plot(resumen_anio.index, resumen_anio['Deficit_Rate'], color=color_line, 
+         marker='o', linewidth=2.5, markersize=8, label='Deficit Rate (%)')
+ax2.set_ylabel('Social or Language Deficit Rate (%)', fontsize=13, fontweight='bold', color=color_line)
+ax2.tick_params(axis='y', labelcolor=color_line, labelsize=11)
+
+# Title
+ax1.set_title('Patient Volume and Social/Language Deficit Rate by Year', 
+              fontsize=15, fontweight='bold', pad=20)
+
+# Annotate totals on bars
+for i, v in enumerate(resumen_anio['Patients']):
+    ax1.text(resumen_anio.index[i], v + 50, str(v), 
+            ha='center', va='bottom', fontsize=9, fontweight='bold', color='navy')
+
+# Annotate deficit rates on line
+for i, (year, rate) in enumerate(zip(resumen_anio.index, resumen_anio['Deficit_Rate'])):
+    if rate > 0:  # Only annotate if there's a deficit
+        ax2.text(year, rate + 0.05, f'{rate}%', 
+                ha='center', va='bottom', fontsize=9, fontweight='bold', color=color_line)
+
+# Combine legends
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=11)
+
+# Styling
+ax1.spines['top'].set_visible(False)
+ax2.spines['top'].set_visible(False)
+
+plt.tight_layout()
+plt.savefig('patient_volume_deficit_by_year.png', dpi=300, bbox_inches='tight', facecolor='white')
 plt.show()
+
 ```
 
 ```{python}
